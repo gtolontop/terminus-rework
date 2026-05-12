@@ -1,0 +1,99 @@
+[gd_scene load_steps=9 format=3 uid="uid://crwoljghpxapx"]
+
+[ext_resource type="Texture2D" uid="uid://cioo2db12j7mq" path="res://sprites/intro/introtexte.png" id="1_ioskq"]
+[ext_resource type="Script" uid="uid://dgyklbyagawhj" path="res://scripts/intro.gd" id="1_yjqpq"]
+[ext_resource type="Texture2D" uid="uid://beo2wtmwi4wsx" path="res://sprites/intro/demanenom.png" id="3_4bx60"]
+[ext_resource type="Texture2D" uid="uid://bt1tnfmltswie" path="res://sprites/intro/tabitou.png" id="4_i2l1n"]
+[ext_resource type="Texture2D" uid="uid://5av1fnimgloj" path="res://sprites/intro/tutodebut.png" id="5_wfs7u"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_yjqpq"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_4bx60"]
+
+[sub_resource type="FontFile" id="FontFile_i2l1n"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/80/0/ascent = 0.0
+cache/0/80/0/descent = 0.0
+cache/0/80/0/underline_position = 0.0
+cache/0/80/0/underline_thickness = 0.0
+cache/0/80/0/scale = 1.0
+
+[node name="intro" type="Node2D"]
+script = ExtResource("1_yjqpq")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(963.25, 604.375)
+scale = Vector2(1993.5, 1217.25)
+mesh = SubResource("QuadMesh_yjqpq")
+
+[node name="bonomeparle" type="Sprite2D" parent="."]
+position = Vector2(950, 455)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("1_ioskq")
+
+[node name="demandenom" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(950, 454)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_4bx60")
+
+[node name="labarre" type="MeshInstance2D" parent="demandenom"]
+visible = false
+modulate = Color(0.864675, 0.864675, 0.864675, 1)
+position = Vector2(6.10352e-05, 211.923)
+scale = Vector2(1292.31, 88.4614)
+mesh = SubResource("QuadMesh_4bx60")
+
+[node name="blcdetonom" type="LineEdit" parent="demandenom"]
+visible = false
+modulate = Color(0, 0, 0, 1)
+self_modulate = Color(0.0562916, 0.0562916, 0.0562916, 1)
+offset_left = -649.0
+offset_top = 139.462
+offset_right = 656.0
+offset_bottom = 264.462
+pivot_offset = Vector2(650, 149)
+theme_override_fonts/font = SubResource("FontFile_i2l1n")
+theme_override_font_sizes/font_size = 80
+placeholder_text = " Jmen blc mais azy"
+max_length = 30
+keep_editing_on_text_submit = true
+
+[node name="tonadresse" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(950, 455)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("4_i2l1n")
+
+[node name="labarre" type="MeshInstance2D" parent="tonadresse"]
+visible = false
+modulate = Color(0.864675, 0.864675, 0.864675, 1)
+position = Vector2(0, 1.538)
+scale = Vector2(1292.31, 88.4614)
+mesh = SubResource("QuadMesh_4bx60")
+
+[node name="tabitoufdp" type="LineEdit" parent="tonadresse"]
+visible = false
+modulate = Color(0, 0, 0, 1)
+self_modulate = Color(0.0562916, 0.0562916, 0.0562916, 1)
+offset_left = -652.308
+offset_top = -65.3846
+offset_right = 652.692
+offset_bottom = 59.6154
+pivot_offset = Vector2(650, 149)
+theme_override_fonts/font = SubResource("FontFile_i2l1n")
+theme_override_font_sizes/font_size = 80
+placeholder_text = "où va t on faire une descente à 10?"
+max_length = 30
+keep_editing_on_text_submit = true
+
+[node name="tuto" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(950, 410)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("5_wfs7u")
