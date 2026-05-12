@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://djm7g7t2ie4ks"]
+
+[ext_resource type="Script" uid="uid://dp8s4tf5581k3" path="res://scripts/pilier.gd" id="1_3b7ua"]
+[ext_resource type="Texture2D" uid="uid://pfu71hi0he6e" path="res://sprites/sm sht/pilierterminus.png" id="1_6fcij"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sfldg"]
+size = Vector2(121, 266)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rsrxp"]
+size = Vector2(101, 21.75)
+
+[node name="pilier1" type="Area2D"]
+script = ExtResource("1_3b7ua")
+
+[node name="detection" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, -79)
+shape = SubResource("RectangleShape2D_sfldg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 26)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_6fcij")
+offset = Vector2(0, -130)
+
+[node name="collision" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collision"]
+position = Vector2(-0.5, 37.125)
+shape = SubResource("RectangleShape2D_rsrxp")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
