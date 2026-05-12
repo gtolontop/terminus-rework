@@ -1,15 +1,16 @@
 use macroquad::prelude::*;
 
+use crate::assets::GameAssets;
 use crate::state::{CarryKind, DialogId, GameState, SceneId};
 use crate::world::{SceneDef, TRAINING_BOX, scene_def};
 
-pub fn draw_game(state: &GameState) {
+pub fn draw_game(state: &GameState, assets: &GameAssets) {
     let scene = scene_def(state.scene);
     draw_scene_floor(&scene);
     draw_exits(&scene);
-    draw_static_actors(&scene);
-    draw_dynamic_actors(state);
-    draw_player(state);
+    draw_static_actors(&scene, assets);
+    draw_dynamic_actors(state, assets);
+    draw_player(state, assets);
     draw_hud(state);
 }
 
@@ -70,14 +71,18 @@ fn draw_exits(scene: &SceneDef) {
     }
 }
 
-fn draw_static_actors(scene: &SceneDef) {
+fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
     for actor in scene.actors {
-        draw_circle(
-            actor.pos.x,
-            actor.pos.y,
-            actor.radius,
-            Color::from_rgba(191, 116, 178, 255),
-        );
+        if actor.id == "sign" {
+            draw_texture_centered(assets.sign.as_ref(), actor.pos, vec2(86.0, 86.0));
+        } else {
+            draw_circle(
+                actor.pos.x,
+                actor.pos.y,
+                actor.radius,
+                Color::from_rgba(191, 116, 178, 255),
+            );
+        }
         draw_text(
             actor.label,
             actor.pos.x - 42.0,
@@ -88,16 +93,15 @@ fn draw_static_actors(scene: &SceneDef) {
     }
 }
 
-fn draw_dynamic_actors(state: &GameState) {
+fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     if state.professor.scene == state.scene
         && !state.professor.boxed
         && state.carried != Some(CarryKind::Professor)
     {
-        draw_circle(
-            state.professor.pos.x,
-            state.professor.pos.y,
-            42.0,
-            Color::from_rgba(142, 190, 245, 255),
+        draw_texture_centered(
+            assets.professor.as_ref(),
+            state.professor.pos,
+            vec2(92.0, 92.0),
         );
         draw_text(
             "Professeur",
@@ -111,13 +115,7 @@ fn draw_dynamic_actors(state: &GameState) {
     for (index, pillar) in state.pillars.iter().enumerate() {
         let kind = CarryKind::Pillar(index);
         if pillar.scene == state.scene && !pillar.boxed && state.carried != Some(kind) {
-            draw_rectangle(
-                pillar.pos.x - 28.0,
-                pillar.pos.y - 50.0,
-                56.0,
-                100.0,
-                Color::from_rgba(220, 197, 126, 255),
-            );
+            draw_texture_centered(assets.pillar.as_ref(), pillar.pos, vec2(72.0, 118.0));
             draw_text(
                 &format!("Pilier {}", index + 1),
                 pillar.pos.x - 40.0,
@@ -148,13 +146,8 @@ fn draw_dynamic_actors(state: &GameState) {
     }
 }
 
-fn draw_player(state: &GameState) {
-    draw_circle(
-        state.player_pos.x,
-        state.player_pos.y,
-        30.0,
-        Color::from_rgba(101, 225, 169, 255),
-    );
+fn draw_player(state: &GameState, assets: &GameAssets) {
+    draw_texture_centered(assets.player.as_ref(), state.player_pos, vec2(70.0, 70.0));
     draw_circle_lines(
         state.player_pos.x,
         state.player_pos.y,
@@ -175,6 +168,23 @@ fn draw_player(state: &GameState) {
             18.0,
             YELLOW,
         );
+    }
+}
+
+fn draw_texture_centered(texture: Option<&Texture2D>, center: Vec2, size: Vec2) {
+    if let Some(texture) = texture {
+        draw_texture_ex(
+            texture,
+            center.x - size.x / 2.0,
+            center.y - size.y / 2.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(size),
+                ..Default::default()
+            },
+        );
+    } else {
+        draw_circle(center.x, center.y, size.x.min(size.y) * 0.35, WHITE);
     }
 }
 

@@ -1,9 +1,11 @@
+mod assets;
 mod game;
 mod input;
 mod render;
 mod state;
 mod world;
 
+use assets::GameAssets;
 use game::Game;
 use macroquad::prelude::*;
 
@@ -19,7 +21,8 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut game = Game::new();
+    let assets = GameAssets::load().await;
+    let mut game = Game::new(assets);
 
     loop {
         game.update();

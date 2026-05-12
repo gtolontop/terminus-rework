@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 
+use crate::assets::GameAssets;
 use crate::input::InputFrame;
 use crate::render::{draw_dialog_overlay, draw_game};
 use crate::state::{AppMode, CarryKind, DialogId, GameState, Spell};
@@ -7,12 +8,14 @@ use crate::world::{TRAINING_BOX, scene_def};
 
 pub struct Game {
     state: GameState,
+    assets: GameAssets,
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new(assets: GameAssets) -> Self {
         Self {
             state: GameState::default(),
+            assets,
         }
     }
 
@@ -171,23 +174,35 @@ impl Game {
 
     pub fn draw(&self) {
         match self.state.mode {
-            AppMode::Menu => draw_menu(),
+            AppMode::Menu => draw_menu(&self.assets),
             AppMode::Intro => draw_intro(self.state.intro_step),
-            AppMode::Playing => draw_game(&self.state),
+            AppMode::Playing => draw_game(&self.state, &self.assets),
             AppMode::Dialog(dialog) => {
-                draw_game(&self.state);
+                draw_game(&self.state, &self.assets);
                 draw_dialog_overlay(dialog);
             }
             AppMode::Complete => {
-                draw_game(&self.state);
+                draw_game(&self.state, &self.assets);
                 draw_complete();
             }
         }
     }
 }
 
-fn draw_menu() {
+fn draw_menu(assets: &GameAssets) {
     clear_background(Color::from_rgba(12, 14, 18, 255));
+    if let Some(title) = &assets.title {
+        draw_texture_ex(
+            title,
+            380.0,
+            115.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(vec2(520.0, 220.0)),
+                ..Default::default()
+            },
+        );
+    }
     draw_text("TERMINUS REWORK", 340.0, 280.0, 56.0, WHITE);
     draw_text("appuie sur Entree ou Espace", 446.0, 345.0, 26.0, GRAY);
 }
