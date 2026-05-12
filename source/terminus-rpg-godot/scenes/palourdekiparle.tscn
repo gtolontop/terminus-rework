@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://brpoxl5excxbi"]
+
+[ext_resource type="Script" uid="uid://n82hl6ii1dq1" path="res://scripts/palourdekiparle.gd" id="1_58w85"]
+[ext_resource type="Texture2D" uid="uid://cgj1hck7q3uv5" path="res://sprites/npcs/image-removebg-preview (1).png" id="1_ga2c5"]
+[ext_resource type="Texture2D" uid="uid://bt1tnfmltswie" path="res://sprites/intro/tabitou.png" id="3_p5kum"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_58w85"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_p5kum"]
+
+[node name="palourdekiparle" type="Node2D"]
+script = ExtResource("1_58w85")
+
+[node name="BG" type="MeshInstance2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(1197.35, 584)
+rotation = -3.14159
+scale = Vector2(2477.14, -1178.34)
+mesh = SubResource("QuadMesh_58w85")
+
+[node name="fondtexte" type="MeshInstance2D" parent="."]
+modulate = Color(0.223103, 0.223103, 0.223103, 1)
+position = Vector2(961, 527)
+scale = Vector2(1914, 418.797)
+mesh = SubResource("QuadMesh_p5kum")
+
+[node name="lapalourde" type="Sprite2D" parent="."]
+position = Vector2(1663, 546)
+rotation = 0.356047
+scale = Vector2(2.47332, 2.70298)
+texture = ExtResource("1_ga2c5")
+
+[node name="texte" type="RichTextLabel" parent="."]
+offset_left = 41.0
+offset_top = 356.0
+offset_right = 1512.0
+offset_bottom = 811.0
+theme_override_font_sizes/normal_font_size = 60
+text = "Connais tu le sort \"pwd\"?
+Si tu utilises ce sort, tu auras des informations sur le lieu où tu te trouves.
+Pour l'invoquer, appuie sur la touche p"
+
+[node name="pass" type="Sprite2D" parent="."]
+position = Vector2(80, 848)
+scale = Vector2(1.92169, 1.94156)
+texture = ExtResource("3_p5kum")
+hframes = 16
+vframes = 8
+frame = 112
