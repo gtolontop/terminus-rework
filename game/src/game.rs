@@ -92,6 +92,13 @@ impl Game {
 
         for exit in scene.exits {
             if exit.rect.contains(self.state.player_pos) {
+                if self.state.scene == crate::state::SceneId::Depart && !self.state.knows(Spell::Cd)
+                {
+                    self.state.player_pos -= input.direction * 34.0;
+                    self.state.toast = Some("Parle a la Palourde avant de partir.".to_string());
+                    break;
+                }
+
                 self.state.scene = exit.target;
                 self.state.player_pos = exit.spawn;
                 self.state.show_pwd = false;
