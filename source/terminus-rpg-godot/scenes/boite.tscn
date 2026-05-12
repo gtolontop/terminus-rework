@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwx7i2y5x2dqe"]
+
+[ext_resource type="Texture2D" uid="uid://cssarawfrn641" path="res://sprites/sm sht/icon.svg" id="1_8klrl"]
+[ext_resource type="Script" uid="uid://b076i27dplxnp" path="res://scripts/boite.gd" id="1_mbcuc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mbcuc"]
+radius = 15.7003
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kwcvy"]
+size = Vector2(121, 57)
+
+[node name="boite" type="Area2D"]
+y_sort_enabled = true
+script = ExtResource("1_mbcuc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(10, 10)
+shape = SubResource("CircleShape2D_mbcuc")
+
+[node name="collision" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collision"]
+position = Vector2(-1.5, 32.5)
+shape = SubResource("RectangleShape2D_kwcvy")
+
+[node name="txture" type="Sprite2D" parent="."]
+texture = ExtResource("1_8klrl")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
