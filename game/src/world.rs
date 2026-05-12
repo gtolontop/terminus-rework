@@ -2,6 +2,8 @@ use macroquad::prelude::*;
 
 use crate::state::SceneId;
 
+pub const TRAINING_BOX: Rect = Rect::new(555.0, 500.0, 170.0, 90.0);
+
 #[derive(Clone, Copy)]
 pub struct Exit {
     pub rect: Rect,

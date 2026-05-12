@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::state::{CarryKind, DialogId, GameState, SceneId};
-use crate::world::{SceneDef, scene_def};
+use crate::world::{SceneDef, TRAINING_BOX, scene_def};
 
 pub fn draw_game(state: &GameState) {
     let scene = scene_def(state.scene);
@@ -130,17 +130,17 @@ fn draw_dynamic_actors(state: &GameState) {
 
     if state.scene == SceneId::SalleEntrainement {
         draw_rectangle(
-            555.0,
-            500.0,
-            170.0,
-            90.0,
+            TRAINING_BOX.x,
+            TRAINING_BOX.y,
+            TRAINING_BOX.w,
+            TRAINING_BOX.h,
             Color::from_rgba(100, 62, 45, 255),
         );
         draw_rectangle_lines(
-            555.0,
-            500.0,
-            170.0,
-            90.0,
+            TRAINING_BOX.x,
+            TRAINING_BOX.y,
+            TRAINING_BOX.w,
+            TRAINING_BOX.h,
             3.0,
             Color::from_rgba(235, 210, 155, 255),
         );
