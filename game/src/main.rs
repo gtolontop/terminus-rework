@@ -1,6 +1,7 @@
 mod assets;
 mod game;
 mod input;
+mod pixel_art;
 mod render;
 mod state;
 mod world;
