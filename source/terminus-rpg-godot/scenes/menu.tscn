@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://djvfpmeyi06y8"]
+
+[ext_resource type="Script" uid="uid://b1p777isot7hh" path="res://scripts/menu.gd" id="1_con2f"]
+[ext_resource type="Texture2D" uid="uid://dqqit3k7ncjsh" path="res://sprites/menu/terminusmenu.png" id="1_yqeox"]
+[ext_resource type="Texture2D" uid="uid://dq1puuu77yxi4" path="res://sprites/menu/bouton.png" id="3_mhnvy"]
+[ext_resource type="Texture2D" uid="uid://lci3m7vuv2s" path="res://sprites/menu/boutononfixed.png" id="4_mhnvy"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_ouk20"]
+
+[node name="menu" type="Node2D"]
+script = ExtResource("1_con2f")
+
+[node name="bg" type="MeshInstance2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(1206.5, 589)
+scale = Vector2(2451, 1226)
+mesh = SubResource("QuadMesh_ouk20")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(950, 300)
+scale = Vector2(0.76, 0.76)
+texture = ExtResource("1_yqeox")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="MenuButton" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 650.0
+offset_top = 700.0
+offset_right = 1253.0
+offset_bottom = 829.0
+grow_horizontal = 2
+pivot_offset = Vector2(300, 75)
+texture_normal = ExtResource("3_mhnvy")
+texture_hover = ExtResource("4_mhnvy")
+
+[connection signal="pressed" from="Control/MenuButton" to="." method="_on_menu_button_pressed"]
