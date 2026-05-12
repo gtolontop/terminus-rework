@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://n3fdovlsqk4g"]
+
+[ext_resource type="Script" uid="uid://whuheuf24x48" path="res://scripts/professeurparle.gd" id="1_wn4fy"]
+[ext_resource type="Texture2D" uid="uid://bhl1isy21inki" path="res://sprites/npcs/professeursprites.png" id="1_ysoe7"]
+[ext_resource type="Texture2D" uid="uid://bt1tnfmltswie" path="res://sprites/intro/tabitou.png" id="3_48mtk"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_wn4fy"]
+
+[node name="professeurparle" type="Node2D"]
+script = ExtResource("1_wn4fy")
+
+[node name="bg" type="MeshInstance2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(976.25, 504.75)
+scale = Vector2(1953.5, 1010.5)
+mesh = SubResource("QuadMesh_wn4fy")
+
+[node name="parlage" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("1_ysoe7")
+offset = Vector2(131.667, 191.333)
+
+[node name="kiparl" type="RichTextLabel" parent="."]
+anchors_preset = -1
+anchor_left = 0.545
+anchor_top = 0.5
+anchor_right = 0.545
+anchor_bottom = 0.5
+offset_left = 737.0
+offset_top = 34.0
+offset_right = 1951.0
+offset_bottom = 1197.0
+pivot_offset = Vector2(-737, -34)
+size_flags_horizontal = 4
+theme_override_font_sizes/normal_font_size = 71
+text = "Le sorts \"mv\" permet de deplacer n'importe quel objet si l'on en est autorisé.
+Pour l'utiliser, il suffit d'appuyer sur la touche \"m\" a proximité d'un objet. Puis, vous pouvez vous deplacer avec l'objet en main. Pour le relacher, appuyez simplement sur \"v\".
+PTN mais c 'est qui lui"
+
+[node name="pass" type="Sprite2D" parent="."]
+position = Vector2(866, 610)
+scale = Vector2(1.92169, 1.94156)
+texture = ExtResource("3_48mtk")
+offset = Vector2(484.469, 152.455)
+hframes = 16
+vframes = 8
+frame = 112
