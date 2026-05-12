@@ -1,0 +1,155 @@
+use macroquad::prelude::*;
+
+use crate::state::SceneId;
+
+#[derive(Clone, Copy)]
+pub struct Exit {
+    pub rect: Rect,
+    pub target: SceneId,
+    pub spawn: Vec2,
+    pub label: &'static str,
+}
+
+#[derive(Clone, Copy)]
+pub struct StaticActor {
+    pub id: &'static str,
+    pub pos: Vec2,
+    pub radius: f32,
+    pub label: &'static str,
+}
+
+pub struct SceneDef {
+    pub id: SceneId,
+    pub background: Color,
+    pub exits: &'static [Exit],
+    pub actors: &'static [StaticActor],
+}
+
+const DEPART_EXITS: &[Exit] = &[
+    Exit {
+        rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
+        target: SceneId::Prairie,
+        spawn: vec2(90.0, 360.0),
+        label: "Prairie",
+    },
+    Exit {
+        rect: Rect::new(40.0, 250.0, 60.0, 220.0),
+        target: SceneId::BoisDesLutins,
+        spawn: vec2(1120.0, 360.0),
+        label: "Bois",
+    },
+];
+
+const PRAIRIE_EXITS: &[Exit] = &[Exit {
+    rect: Rect::new(40.0, 250.0, 60.0, 220.0),
+    target: SceneId::Depart,
+    spawn: vec2(1120.0, 360.0),
+    label: "Depart",
+}];
+
+const BOIS_EXITS: &[Exit] = &[
+    Exit {
+        rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
+        target: SceneId::Depart,
+        spawn: vec2(120.0, 360.0),
+        label: "Depart",
+    },
+    Exit {
+        rect: Rect::new(530.0, 30.0, 220.0, 60.0),
+        target: SceneId::AcademieDesBots,
+        spawn: vec2(640.0, 610.0),
+        label: "Academie",
+    },
+];
+
+const ACADEMIE_EXITS: &[Exit] = &[
+    Exit {
+        rect: Rect::new(530.0, 640.0, 220.0, 50.0),
+        target: SceneId::BoisDesLutins,
+        spawn: vec2(640.0, 120.0),
+        label: "Bois",
+    },
+    Exit {
+        rect: Rect::new(40.0, 250.0, 60.0, 220.0),
+        target: SceneId::SalleEntrainement,
+        spawn: vec2(1120.0, 360.0),
+        label: "Entrainement",
+    },
+    Exit {
+        rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
+        target: SceneId::Cours,
+        spawn: vec2(120.0, 360.0),
+        label: "Cours",
+    },
+];
+
+const COURS_EXITS: &[Exit] = &[Exit {
+    rect: Rect::new(40.0, 250.0, 60.0, 220.0),
+    target: SceneId::AcademieDesBots,
+    spawn: vec2(1120.0, 360.0),
+    label: "Academie",
+}];
+
+const TRAINING_EXITS: &[Exit] = &[Exit {
+    rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
+    target: SceneId::AcademieDesBots,
+    spawn: vec2(120.0, 360.0),
+    label: "Academie",
+}];
+
+const DEPART_ACTORS: &[StaticActor] = &[StaticActor {
+    id: "palourde",
+    pos: vec2(640.0, 360.0),
+    radius: 58.0,
+    label: "Palourde",
+}];
+
+const BOIS_ACTORS: &[StaticActor] = &[StaticActor {
+    id: "sign",
+    pos: vec2(640.0, 430.0),
+    radius: 56.0,
+    label: "Panneau",
+}];
+
+const EMPTY_ACTORS: &[StaticActor] = &[];
+
+pub fn scene_def(id: SceneId) -> SceneDef {
+    match id {
+        SceneId::Depart => SceneDef {
+            id,
+            background: Color::from_rgba(43, 81, 65, 255),
+            exits: DEPART_EXITS,
+            actors: DEPART_ACTORS,
+        },
+        SceneId::Prairie => SceneDef {
+            id,
+            background: Color::from_rgba(78, 112, 58, 255),
+            exits: PRAIRIE_EXITS,
+            actors: EMPTY_ACTORS,
+        },
+        SceneId::BoisDesLutins => SceneDef {
+            id,
+            background: Color::from_rgba(31, 65, 55, 255),
+            exits: BOIS_EXITS,
+            actors: BOIS_ACTORS,
+        },
+        SceneId::AcademieDesBots => SceneDef {
+            id,
+            background: Color::from_rgba(54, 66, 92, 255),
+            exits: ACADEMIE_EXITS,
+            actors: EMPTY_ACTORS,
+        },
+        SceneId::Cours => SceneDef {
+            id,
+            background: Color::from_rgba(71, 62, 86, 255),
+            exits: COURS_EXITS,
+            actors: EMPTY_ACTORS,
+        },
+        SceneId::SalleEntrainement => SceneDef {
+            id,
+            background: Color::from_rgba(67, 70, 73, 255),
+            exits: TRAINING_EXITS,
+            actors: EMPTY_ACTORS,
+        },
+    }
+}
