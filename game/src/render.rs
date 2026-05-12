@@ -208,17 +208,16 @@ fn draw_hud(state: &GameState) {
             .collect::<Vec<_>>()
             .join("  ")
     };
-    draw_text(&format!("sorts: {spells}"), 48.0, 690.0, 22.0, WHITE);
+    draw_text(&format!("Sorts appris: {spells}"), 48.0, 682.0, 21.0, WHITE);
 
-    let mut controls = vec!["Fleches/WASD: bouger", "C/Espace: parler"];
-    if state.knows(Spell::Pwd) {
-        controls.push("P: pwd");
-    }
-    if state.knows(Spell::Mv) {
-        controls.push("M: mv prendre");
-        controls.push("V: mv poser");
-    }
-    draw_text(&controls.join("   "), 330.0, 690.0, 20.0, GRAY);
+    let actions = available_actions(state);
+    draw_text(
+        &format!("Possible ici: {}", actions.join("   |   ")),
+        48.0,
+        710.0,
+        20.0,
+        GRAY,
+    );
 
     if state.show_pwd {
         draw_rectangle(48.0, 96.0, 300.0, 48.0, Color::from_rgba(0, 0, 0, 175));
@@ -241,4 +240,84 @@ fn draw_hud(state: &GameState) {
             Color::from_rgba(150, 240, 180, 255),
         );
     }
+}
+
+fn available_actions(state: &GameState) -> Vec<String> {
+    let mut actions = vec!["Fleches/WASD: bouger".to_string()];
+
+    if let Some(kind) = state.carried {
+        let label = match kind {
+            CarryKind::Professor => "professeur",
+            CarryKind::Pillar(_) => "pilier",
+        };
+
+        if state.scene == SceneId::SalleEntrainement && TRAINING_BOX.contains(state.player_pos) {
+            actions.push(format!("V: poser {label} dans la boite"));
+        } else {
+            actions.push(format!("V: poser {label}"));
+        }
+        return actions;
+    }
+
+    let scene = scene_def(state.scene);
+    for actor in scene.actors {
+        if state.player_pos.distance(actor.pos) <= actor.radius + 38.0 {
+            match actor.id {
+                "palourde" if state.knows(Spell::Cat) => {
+                    actions.push("C/Espace: cat Palourde".to_string())
+                }
+                "palourde" => actions.push("Espace: parler a Palourde".to_string()),
+                "sign" if state.knows(Spell::Cat) => {
+                    actions.push("C/Espace: cat Panneau".to_string())
+                }
+                _ => {}
+            }
+        }
+    }
+
+    if state.professor.scene == state.scene
+        && !state.professor.boxed
+        && state.player_pos.distance(state.professor.pos) <= 86.0
+    {
+        if state.knows(Spell::Cat) {
+            actions.push("C/Espace: cat Professeur".to_string());
+        }
+        if state.knows(Spell::Mv) {
+            actions.push("M: mv Professeur".to_string());
+        }
+    }
+
+    if state.knows(Spell::Mv) {
+        for (index, pillar) in state.pillars.iter().enumerate() {
+            if pillar.scene == state.scene
+                && !pillar.boxed
+                && state.player_pos.distance(pillar.pos) <= 82.0
+            {
+                actions.push(format!("M: mv Pilier {}", index + 1));
+            }
+        }
+    }
+
+    if state.knows(Spell::Pwd) {
+        actions.push("P: pwd".to_string());
+    }
+
+    for exit in scene.exits {
+        if point_near_rect(state.player_pos, exit.rect, 12.0) {
+            if state.scene == SceneId::Depart && !state.knows(Spell::Cd) {
+                actions.push("Sortie bloquee: parle a la Palourde".to_string());
+            } else if state.knows(Spell::Cd) {
+                actions.push(format!("cd: aller vers {}", exit.label));
+            }
+        }
+    }
+
+    actions
+}
+
+fn point_near_rect(point: Vec2, rect: Rect, margin: f32) -> bool {
+    point.x >= rect.x - margin
+        && point.x <= rect.x + rect.w + margin
+        && point.y >= rect.y - margin
+        && point.y <= rect.y + rect.h + margin
 }
