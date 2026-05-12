@@ -2,13 +2,13 @@ use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
-use crate::state::{CarryKind, DialogId, GameState, SceneId};
+use crate::state::{CarryKind, DialogId, GameState, SceneId, Spell};
 use crate::world::{SceneDef, TRAINING_BOX, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
     let scene = scene_def(state.scene);
     draw_scene_floor(&scene);
-    draw_exits(&scene);
+    draw_exits(&scene, state);
     draw_static_actors(&scene, assets);
     draw_dynamic_actors(state, assets);
     draw_player(state, assets);
@@ -59,16 +59,23 @@ fn draw_scene_floor(scene: &SceneDef) {
     draw_text(scene.id.label(), 48.0, 70.0, 32.0, WHITE);
 }
 
-fn draw_exits(scene: &SceneDef) {
+fn draw_exits(scene: &SceneDef, state: &GameState) {
+    let exits_locked = state.scene == SceneId::Depart && !state.knows(Spell::Cd);
+
     for exit in scene.exits {
-        draw_rectangle(
-            exit.rect.x,
-            exit.rect.y,
-            exit.rect.w,
-            exit.rect.h,
-            Color::from_rgba(243, 190, 84, 145),
-        );
-        draw_text(exit.label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
+        let color = if exits_locked {
+            Color::from_rgba(100, 105, 110, 90)
+        } else {
+            Color::from_rgba(243, 190, 84, 145)
+        };
+
+        draw_rectangle(exit.rect.x, exit.rect.y, exit.rect.w, exit.rect.h, color);
+        let label = if exits_locked {
+            "Parle d'abord"
+        } else {
+            exit.label
+        };
+        draw_text(label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
     }
 }
 
@@ -191,20 +198,27 @@ fn draw_texture_centered(texture: Option<&Texture2D>, center: Vec2, size: Vec2) 
 }
 
 fn draw_hud(state: &GameState) {
-    let spells = state
-        .spells
-        .iter()
-        .map(|spell| spell.label())
-        .collect::<Vec<_>>()
-        .join("  ");
+    let spells = if state.spells.is_empty() {
+        "aucun".to_string()
+    } else {
+        state
+            .spells
+            .iter()
+            .map(|spell| spell.label())
+            .collect::<Vec<_>>()
+            .join("  ")
+    };
     draw_text(&format!("sorts: {spells}"), 48.0, 690.0, 22.0, WHITE);
-    draw_text(
-        "Fleches/WASD: bouger   C/Espace: cat   P: pwd   M: mv prendre   V: mv poser",
-        430.0,
-        690.0,
-        20.0,
-        GRAY,
-    );
+
+    let mut controls = vec!["Fleches/WASD: bouger", "C/Espace: parler"];
+    if state.knows(Spell::Pwd) {
+        controls.push("P: pwd");
+    }
+    if state.knows(Spell::Mv) {
+        controls.push("M: mv prendre");
+        controls.push("V: mv poser");
+    }
+    draw_text(&controls.join("   "), 330.0, 690.0, 20.0, GRAY);
 
     if state.show_pwd {
         draw_rectangle(48.0, 96.0, 300.0, 48.0, Color::from_rgba(0, 0, 0, 175));

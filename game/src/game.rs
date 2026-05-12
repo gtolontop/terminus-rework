@@ -66,7 +66,7 @@ impl Game {
         if input.cat {
             if let Some(dialog) = self.find_cat_dialog() {
                 match dialog {
-                    DialogId::Palourde => self.state.learn(Spell::Pwd),
+                    DialogId::Palourde => self.state.learn_starter_spells(),
                     DialogId::Professor => self.state.learn(Spell::Mv),
                     DialogId::Sign => {}
                 }

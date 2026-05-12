@@ -104,7 +104,7 @@ impl Default for GameState {
             scene: SceneId::Depart,
             player_pos: vec2(640.0, 360.0),
             player_facing: Facing::Down,
-            spells: vec![Spell::Cd, Spell::Cat, Spell::Ls],
+            spells: vec![],
             show_pwd: false,
             carried: None,
             professor: ActorState {
@@ -146,5 +146,14 @@ impl GameState {
             self.spells.push(spell);
             self.toast = Some(format!("Nouveau sort appris : {}", spell.label()));
         }
+    }
+
+    pub fn learn_starter_spells(&mut self) {
+        for spell in [Spell::Cd, Spell::Cat, Spell::Ls, Spell::Pwd] {
+            if !self.knows(spell) {
+                self.spells.push(spell);
+            }
+        }
+        self.toast = Some("Sorts appris : cd, cat, ls, pwd".to_string());
     }
 }
