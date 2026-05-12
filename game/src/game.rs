@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::input::InputFrame;
 use crate::render::{draw_dialog_overlay, draw_game};
-use crate::state::{AppMode, CarryKind, DialogId, GameState, Spell};
+use crate::state::{AppMode, CarryKind, DialogId, Facing, GameState, Spell};
 use crate::world::{TRAINING_BOX, scene_def};
 
 pub struct Game {
@@ -48,6 +48,16 @@ impl Game {
     }
 
     fn update_playing(&mut self, input: InputFrame) {
+        if input.direction.x < -0.1 {
+            self.state.player_facing = Facing::Left;
+        } else if input.direction.x > 0.1 {
+            self.state.player_facing = Facing::Right;
+        } else if input.direction.y < -0.1 {
+            self.state.player_facing = Facing::Up;
+        } else if input.direction.y > 0.1 {
+            self.state.player_facing = Facing::Down;
+        }
+
         self.state.player_pos += input.direction * 260.0 * get_frame_time();
         self.state.player_pos.x = self.state.player_pos.x.clamp(70.0, 1210.0);
         self.state.player_pos.y = self.state.player_pos.y.clamp(120.0, 620.0);

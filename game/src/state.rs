@@ -66,6 +66,14 @@ pub enum CarryKind {
     Pillar(usize),
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum Facing {
+    Down,
+    Up,
+    Left,
+    Right,
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct ActorState {
     pub scene: SceneId,
@@ -78,6 +86,7 @@ pub struct GameState {
     pub mode: AppMode,
     pub scene: SceneId,
     pub player_pos: Vec2,
+    pub player_facing: Facing,
     pub spells: Vec<Spell>,
     pub show_pwd: bool,
     pub carried: Option<CarryKind>,
@@ -94,6 +103,7 @@ impl Default for GameState {
             mode: AppMode::Menu,
             scene: SceneId::Depart,
             player_pos: vec2(640.0, 360.0),
+            player_facing: Facing::Down,
             spells: vec![Spell::Cd, Spell::Cat, Spell::Ls],
             show_pwd: false,
             carried: None,
