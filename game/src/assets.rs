@@ -2,7 +2,6 @@ use macroquad::prelude::*;
 
 pub struct GameAssets {
     pub title: Option<Texture2D>,
-    pub player: Option<Texture2D>,
     pub professor: Option<Texture2D>,
     pub pillar: Option<Texture2D>,
     pub sign: Option<Texture2D>,
@@ -14,11 +13,6 @@ impl GameAssets {
             title: load_first(&[
                 "assets/terminus-rpg/sprites/menu/terminusmenu.png",
                 "../assets/terminus-rpg/sprites/menu/terminusmenu.png",
-            ])
-            .await,
-            player: load_first(&[
-                "assets/terminus-rpg/sprites/player/rpgpoulemaire-removebg-preview.png",
-                "../assets/terminus-rpg/sprites/player/rpgpoulemaire-removebg-preview.png",
             ])
             .await,
             professor: load_first(&[

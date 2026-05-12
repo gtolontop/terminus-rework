@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
+use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, GameState, SceneId};
 use crate::world::{SceneDef, TRAINING_BOX, scene_def};
 
@@ -147,11 +148,12 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
 }
 
 fn draw_player(state: &GameState, assets: &GameAssets) {
-    draw_texture_centered(assets.player.as_ref(), state.player_pos, vec2(70.0, 70.0));
+    let _ = assets;
+    draw_player_sprite(state.player_pos, state.player_facing);
     draw_circle_lines(
         state.player_pos.x,
         state.player_pos.y,
-        34.0,
+        28.0,
         3.0,
         Color::from_rgba(240, 255, 245, 210),
     );
