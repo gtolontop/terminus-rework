@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://3f3gcq6c74jd"]
+
+[ext_resource type="Script" uid="uid://we5lgfplcdwt" path="res://scripts/lirepanneau.gd" id="1_lcidc"]
+[ext_resource type="Texture2D" uid="uid://dhncghepbkhum" path="res://sprites/sm sht/panneau1.png" id="2_ss83h"]
+[ext_resource type="Texture2D" uid="uid://bt1tnfmltswie" path="res://sprites/intro/tabitou.png" id="3_rxjnx"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_bafce"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_6n4s5"]
+
+[node name="lirepanneau" type="Node2D"]
+script = ExtResource("1_lcidc")
+
+[node name="bg" type="MeshInstance2D" parent="."]
+modulate = Color(0.183658, 0.434157, 0.194734, 1)
+position = Vector2(970.25, 507.75)
+scale = Vector2(1941.5, 1016.5)
+mesh = SubResource("QuadMesh_bafce")
+
+[node name="Panneau1" type="Sprite2D" parent="."]
+position = Vector2(920, 604)
+scale = Vector2(2.26228, 2.084)
+texture = ExtResource("2_ss83h")
+
+[node name="recouvre" type="MeshInstance2D" parent="Panneau1"]
+position = Vector2(9.28268, -49.6642)
+scale = Vector2(297.046, 166.507)
+mesh = SubResource("QuadMesh_6n4s5")
+
+[node name="textepanneau" type="RichTextLabel" parent="Panneau1"]
+modulate = Color(0, 0, 0, 1)
+offset_left = -142.334
+offset_top = -138.196
+offset_right = 188.666
+offset_bottom = 40.804
+theme_override_font_sizes/normal_font_size = 20
+text = "Académie des Bots : Grande école de Sorcellerie du Grand Ordinateur.
+À ne pas manquer aujourd'hui : Leçon d'initiation aux commandes !"
+
+[node name="pass" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.411765)
+position = Vector2(1287, 662)
+scale = Vector2(0.948797, 0.775976)
+texture = ExtResource("3_rxjnx")
+hframes = 16
+vframes = 8
+frame = 112
