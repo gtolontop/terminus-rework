@@ -22,6 +22,7 @@ cargo run
 - Entree/Espace : valider menu, intro, dialogues
 - Les autres actions sont affichees en bas dans `Possible ici`.
 - Le jeu n'affiche `pwd`, `mv`, les sorties et les interactions que quand elles sont vraiment disponibles.
+- Les chemins indisponibles sont grises et affichent la raison du blocage.
 
 ## Tranche implementee
 
