@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7ap6gn265n6d"]
+
+[ext_resource type="Texture2D" uid="uid://nf04f6hbsno3" path="res://sprites/npcs/image-removebg-preview (2).png" id="1_8xajx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_001jo"]
+radius = 166.108
+
+[node name="palourde" type="Area2D"]
+
+[node name="ombre" type="Sprite2D" parent="."]
+modulate = Color(0.760784, 0.760784, 0.760784, 0.541176)
+self_modulate = Color(0.114897, 0.114897, 0.114897, 1)
+position = Vector2(11, 45)
+scale = Vector2(0.98615, 0.508671)
+texture = ExtResource("1_8xajx")
+
+[node name="inbox" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_001jo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_8xajx")
+
+[node name="collision" type="CharacterBody2D" parent="."]
+position = Vector2(1, 0)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="collision"]
+rotation = 1.5708
+polygon = PackedVector2Array(71, 12, 71, -71, 65, -70, 56, -93, 34, -114, 20, -117, 16, -132, -2.00001, -133, -45, -101, -56, -81, -72, -41, -77, 2, -71, 35, -57, 57, -36, 79, -20, 91, -18, 106, -35, 119, -29, 135, 4.00001, 129, 37, 111, 36, 89)
