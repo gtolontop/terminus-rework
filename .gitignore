@@ -11,5 +11,7 @@ Thumbs.db
 build/
 dist/
 exports/
+target/
+**/target/
 *.pck
 *.zip
