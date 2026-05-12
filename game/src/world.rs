@@ -31,13 +31,13 @@ const DEPART_EXITS: &[Exit] = &[
     Exit {
         rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
         target: SceneId::Prairie,
-        spawn: vec2(90.0, 360.0),
+        spawn: vec2(170.0, 360.0),
         label: "Prairie",
     },
     Exit {
         rect: Rect::new(40.0, 250.0, 60.0, 220.0),
         target: SceneId::BoisDesLutins,
-        spawn: vec2(1120.0, 360.0),
+        spawn: vec2(1060.0, 360.0),
         label: "Bois",
     },
 ];
@@ -45,7 +45,7 @@ const DEPART_EXITS: &[Exit] = &[
 const PRAIRIE_EXITS: &[Exit] = &[Exit {
     rect: Rect::new(40.0, 250.0, 60.0, 220.0),
     target: SceneId::Depart,
-    spawn: vec2(1120.0, 360.0),
+    spawn: vec2(1060.0, 360.0),
     label: "Depart",
 }];
 
@@ -53,7 +53,7 @@ const BOIS_EXITS: &[Exit] = &[
     Exit {
         rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
         target: SceneId::Depart,
-        spawn: vec2(120.0, 360.0),
+        spawn: vec2(170.0, 360.0),
         label: "Depart",
     },
     Exit {
@@ -74,13 +74,13 @@ const ACADEMIE_EXITS: &[Exit] = &[
     Exit {
         rect: Rect::new(40.0, 250.0, 60.0, 220.0),
         target: SceneId::SalleEntrainement,
-        spawn: vec2(1120.0, 360.0),
+        spawn: vec2(1060.0, 360.0),
         label: "Entrainement",
     },
     Exit {
         rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
         target: SceneId::Cours,
-        spawn: vec2(120.0, 360.0),
+        spawn: vec2(170.0, 360.0),
         label: "Cours",
     },
 ];
@@ -88,14 +88,14 @@ const ACADEMIE_EXITS: &[Exit] = &[
 const COURS_EXITS: &[Exit] = &[Exit {
     rect: Rect::new(40.0, 250.0, 60.0, 220.0),
     target: SceneId::AcademieDesBots,
-    spawn: vec2(1120.0, 360.0),
+    spawn: vec2(1060.0, 360.0),
     label: "Academie",
 }];
 
 const TRAINING_EXITS: &[Exit] = &[Exit {
     rect: Rect::new(1180.0, 250.0, 60.0, 220.0),
     target: SceneId::AcademieDesBots,
-    spawn: vec2(120.0, 360.0),
+    spawn: vec2(170.0, 360.0),
     label: "Academie",
 }];
 
