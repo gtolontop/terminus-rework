@@ -20,10 +20,10 @@ cargo run
 
 - Fleches ou WASD : deplacement
 - Entree/Espace : valider menu, intro, dialogues
-- C ou Espace : `cat`
-- P : `pwd`
-- M : `mv` prendre
-- V : `mv` poser
+- C ou Espace : parler / utiliser `cat` quand il est appris
+- P : `pwd`, apres l'avoir appris
+- M : `mv` prendre, apres l'avoir appris
+- V : `mv` poser, apres l'avoir appris
 
 ## Tranche implementee
 
