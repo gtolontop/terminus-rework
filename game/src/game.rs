@@ -55,6 +55,9 @@ impl Game {
     }
 
     fn update_playing(&mut self, input: InputFrame) {
+        let delta = get_frame_time();
+        self.state.exit_cooldown = (self.state.exit_cooldown - delta).max(0.0);
+
         if input.direction.x < -0.1 {
             self.state.player_facing = Facing::Left;
         } else if input.direction.x > 0.1 {
@@ -65,7 +68,7 @@ impl Game {
             self.state.player_facing = Facing::Down;
         }
 
-        self.state.player_pos += input.direction * 260.0 * get_frame_time();
+        self.state.player_pos += input.direction * 260.0 * delta;
         self.state.player_pos.x = self.state.player_pos.x.clamp(70.0, 1210.0);
         self.state.player_pos.y = self.state.player_pos.y.clamp(120.0, 620.0);
 
@@ -97,6 +100,10 @@ impl Game {
             self.drop_carried();
         }
 
+        if self.state.exit_cooldown > 0.0 {
+            return;
+        }
+
         for exit in scene.exits {
             if exit.rect.contains(self.state.player_pos) {
                 if let Some(reason) = exit_locked_reason(&self.state, exit) {
@@ -107,6 +114,7 @@ impl Game {
 
                 self.state.scene = exit.target;
                 self.state.player_pos = exit.spawn;
+                self.state.exit_cooldown = 0.18;
                 self.state.show_pwd = false;
                 self.state.toast = None;
                 break;
