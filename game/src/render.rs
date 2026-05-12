@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::state::{CarryKind, GameState, SceneId};
+use crate::state::{CarryKind, DialogId, GameState, SceneId};
 use crate::world::{SceneDef, scene_def};
 
 pub fn draw_game(state: &GameState) {
@@ -11,6 +11,36 @@ pub fn draw_game(state: &GameState) {
     draw_dynamic_actors(state);
     draw_player(state);
     draw_hud(state);
+}
+
+pub fn draw_dialog_overlay(dialog: DialogId) {
+    let (title, body) = match dialog {
+        DialogId::Palourde => (
+            "Palourde",
+            "Connais-tu le sort pwd ? Il revele le dossier ou tu te trouves.",
+        ),
+        DialogId::Sign => (
+            "Panneau",
+            "Au nord, l'Academie des Bots. On y enseigne les sorts dangereux.",
+        ),
+        DialogId::Professor => (
+            "Professeur",
+            "mv deplace ce qui bloque ton chemin. Essaie-le dans la salle d'entrainement.",
+        ),
+    };
+
+    draw_rectangle(190.0, 470.0, 900.0, 150.0, Color::from_rgba(0, 0, 0, 220));
+    draw_rectangle_lines(
+        190.0,
+        470.0,
+        900.0,
+        150.0,
+        3.0,
+        Color::from_rgba(245, 235, 180, 255),
+    );
+    draw_text(title, 220.0, 515.0, 30.0, YELLOW);
+    draw_text(body, 220.0, 560.0, 24.0, WHITE);
+    draw_text("Entree/Espace pour fermer", 220.0, 596.0, 20.0, GRAY);
 }
 
 fn draw_scene_floor(scene: &SceneDef) {
