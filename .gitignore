@@ -1,0 +1,15 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Godot generated/editor cache
+.godot/
+**/.godot/
+*.tmp
+
+# Local exports/build outputs
+build/
+dist/
+exports/
+*.pck
+*.zip
