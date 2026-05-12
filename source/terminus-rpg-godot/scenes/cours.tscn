@@ -1,0 +1,81 @@
+[gd_scene load_steps=9 format=3 uid="uid://jhyt4hf72aie"]
+
+[ext_resource type="Script" uid="uid://dpy88lklg8qaq" path="res://scripts/cours.gd" id="1_bm1sp"]
+[ext_resource type="Texture2D" uid="uid://cm20lt8mx2ebd" path="res://sprites/tilemap/tilemap rpg terminus, plaine.png" id="1_s78vg"]
+[ext_resource type="Texture2D" uid="uid://blcs1khssn4yc" path="res://sprites/tilemap/map temp terminus.png" id="2_kpb3h"]
+[ext_resource type="PackedScene" uid="uid://dljywjurnllpv" path="res://scenes/player.tscn" id="3_kpb3h"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0vi4d"]
+texture = ExtResource("1_s78vg")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/size_in_atlas = Vector2i(1, 2)
+4:0/0 = 0
+4:0/0/y_sort_origin = 3
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, 2.69788, 2.51802, 2.87774, 2.51802, 2.87774, 1.97845, 8, 8.45336, 16.1873, -5.93534, 16.547, -0.719435, 8, -2.69788, 2.33816)
+3:1/0 = 0
+2:1/0 = 0
+2:1/0/y_sort_origin = -10
+1:1/0 = 0
+1:1/0/y_sort_origin = -10
+0:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bm1sp"]
+texture = ExtResource("2_kpb3h")
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:0/0 = 0
+2:1/0 = 0
+2:1/0/y_sort_origin = -1
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.57562, 1.61873, -5.39576, 0.539577, 4.85619, 0.899294, 5.03605, 2.87774, -5.57562, 2.33816)
+3:0/size_in_atlas = Vector2i(1, 2)
+3:0/0 = 0
+3:0/0/y_sort_origin = 3
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.2159, 8, 4.13675, 8, 4.67633, 13.6693, -4.67633, 13.8491)
+
+[sub_resource type="TileSet" id="TileSet_vq8vw"]
+physics_layer_0/collision_layer = 2
+sources/0 = SubResource("TileSetAtlasSource_0vi4d")
+sources/1 = SubResource("TileSetAtlasSource_bm1sp")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bm1sp"]
+size = Vector2(202, 259)
+
+[node name="cours" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_bm1sp")
+
+[node name="TileMap" type="TileMap" parent="."]
+y_sort_enabled = true
+scale = Vector2(8, 8)
+tile_set = SubResource("TileSet_vq8vw")
+format = 2
+layer_0/name = "sol"
+layer_0/tile_data = PackedInt32Array(196608, 131073, 0, 196609, 131073, 0, 196610, 131073, 0, 262144, 131073, 0, 262145, 131073, 0, 262146, 131073, 0, 327680, 65537, 1, 327681, 65537, 1, 327682, 65537, 1, 327683, 65537, 1, 327684, 65537, 1, 327685, 65537, 1, 327686, 65537, 1, 262148, 65537, 1, 262147, 65537, 1, 196611, 65537, 1, 131075, 65537, 1, 131074, 65537, 1, 131073, 65537, 1, 131072, 65537, 1, 65536, 65537, 1, 0, 65537, 1, 1, 65537, 1, 65538, 65537, 1, 65537, 65537, 1, 2, 65537, 1, 3, 65537, 1, 4, 65537, 1, 65540, 65537, 1, 65541, 65537, 1, 131077, 65537, 1, 196613, 65537, 1, 131076, 65537, 1, 65539, 65537, 1, 196612, 65537, 1, 262149, 65537, 1, 5, 65537, 1, 65542, 65537, 1, 131078, 65537, 1, 196614, 65537, 1, 262150, 65537, 1, 6, 65537, 1, 458752, 65537, 1, 458753, 65537, 1, 458754, 65537, 1, 458755, 65537, 1, 458756, 65537, 1, 393221, 65537, 1, 393222, 65537, 1, 393220, 65537, 1, 393219, 65537, 1, 393218, 65537, 1, 393217, 65537, 1, 393216, 65537, 1, 458757, 65537, 1, 458758, 65537, 1, 458759, 65537, 1, 393223, 65537, 1, 327687, 65537, 1, 262151, 65537, 1, 196615, 65537, 1, 131079, 65537, 1, 65543, 65537, 1, 7, 65537, 1, 8, 65537, 1, 9, 65537, 1, 10, 65537, 1, 11, 65537, 1, 12, 65537, 1, 13, 65537, 1, 14, 65537, 1, 65550, 65537, 1, 131086, 65537, 1, 196622, 65537, 1, 262158, 65537, 1, 327694, 65537, 1, 458766, 65537, 1, 458765, 65537, 1, 458764, 65537, 1, 458763, 65537, 1, 458762, 65537, 1, 458761, 65537, 1, 458760, 65537, 1, 393224, 65537, 1, 327688, 65537, 1, 262152, 65537, 1, 196616, 65537, 1, 131081, 65537, 1, 65545, 65537, 1, 65544, 65537, 1, 131080, 65537, 1, 327689, 65537, 1, 393225, 65537, 1, 393226, 65537, 1, 327690, 65537, 1, 262153, 65537, 1, 196617, 65537, 1, 262154, 65537, 1, 196618, 65537, 1, 131082, 65537, 1, 65546, 65537, 1, 262155, 65537, 1, 327691, 65537, 1, 196619, 65537, 1, 131084, 65537, 1, 65548, 65537, 1, 196620, 65537, 1, 262156, 65537, 1, 327692, 65537, 1, 393228, 65537, 1, 393227, 65537, 1, 65547, 65537, 1, 131083, 65537, 1, 262157, 65537, 1, 196621, 65537, 1, 131085, 65537, 1, 65549, 65537, 1, 327693, 65537, 1, 393229, 65537, 1, 393230, 65537, 1)
+layer_1/name = "reliefs"
+layer_2/name = "decor"
+layer_2/y_sort_enabled = true
+
+[node name="player" parent="." instance=ExtResource("3_kpb3h")]
+y_sort_enabled = true
+position = Vector2(224, 493)
+scale = Vector2(0.75, 0.75)
+collision_mask = 2
+
+[node name="bords" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="bords"]
+polygon = PackedVector2Array(0, 1, 0, 383, -199, 384, -197, 621, -1, 643, 1, 1027, 1922, 1025, 1920, 66, 29, 69, 25, -43, 1957, -25, 1957, 1051, -57, 1050, -69, 676, -289, 643, -246, 254, -49, 289, -67, -70)
+
+[node name="toacademie" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="toacademie"]
+position = Vector2(-113, 513)
+shape = SubResource("RectangleShape2D_bm1sp")
+
+[connection signal="body_entered" from="toacademie" to="." method="_on_toacademie_body_entered"]
