@@ -23,6 +23,7 @@ cargo run
 - Les autres actions sont affichees en bas dans `Possible ici`.
 - Le jeu n'affiche `pwd`, `mv`, les sorties et les interactions que quand elles sont vraiment disponibles.
 - Les chemins indisponibles sont grises et affichent la raison du blocage.
+- Les transitions posent le joueur hors de la porte pour eviter les retours instantanes.
 
 ## Tranche implementee
 
