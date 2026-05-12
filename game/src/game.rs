@@ -4,7 +4,7 @@ use crate::assets::GameAssets;
 use crate::input::InputFrame;
 use crate::render::{draw_dialog_overlay, draw_game};
 use crate::state::{AppMode, CarryKind, DialogId, DialogReward, Facing, GameState, Spell};
-use crate::world::{TRAINING_BOX, scene_def};
+use crate::world::{TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub struct Game {
     state: GameState,
@@ -99,10 +99,9 @@ impl Game {
 
         for exit in scene.exits {
             if exit.rect.contains(self.state.player_pos) {
-                if self.state.scene == crate::state::SceneId::Depart && !self.state.knows(Spell::Cd)
-                {
+                if let Some(reason) = exit_locked_reason(&self.state, exit) {
                     self.state.player_pos -= input.direction * 34.0;
-                    self.state.toast = Some("Parle a la Palourde avant de partir.".to_string());
+                    self.state.toast = Some(reason.to_string());
                     break;
                 }
 

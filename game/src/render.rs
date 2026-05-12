@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, GameState, SceneId, Spell};
-use crate::world::{SceneDef, TRAINING_BOX, scene_def};
+use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
     let scene = scene_def(state.scene);
@@ -60,23 +60,79 @@ fn draw_scene_floor(scene: &SceneDef) {
 }
 
 fn draw_exits(scene: &SceneDef, state: &GameState) {
-    let exits_locked = state.scene == SceneId::Depart && !state.knows(Spell::Cd);
-
     for exit in scene.exits {
-        let color = if exits_locked {
-            Color::from_rgba(100, 105, 110, 90)
+        if let Some(reason) = exit_locked_reason(state, exit) {
+            draw_locked_exit(exit, reason);
         } else {
-            Color::from_rgba(243, 190, 84, 145)
-        };
-
-        draw_rectangle(exit.rect.x, exit.rect.y, exit.rect.w, exit.rect.h, color);
-        let label = if exits_locked {
-            "Parle d'abord"
-        } else {
-            exit.label
-        };
-        draw_text(label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
+            draw_open_exit(exit);
+        }
     }
+}
+
+fn draw_open_exit(exit: &Exit) {
+    draw_rectangle(
+        exit.rect.x,
+        exit.rect.y,
+        exit.rect.w,
+        exit.rect.h,
+        Color::from_rgba(243, 190, 84, 145),
+    );
+    draw_rectangle_lines(
+        exit.rect.x,
+        exit.rect.y,
+        exit.rect.w,
+        exit.rect.h,
+        2.0,
+        Color::from_rgba(255, 229, 157, 220),
+    );
+    draw_text(exit.label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
+}
+
+fn draw_locked_exit(exit: &Exit, reason: &str) {
+    draw_rectangle(
+        exit.rect.x,
+        exit.rect.y,
+        exit.rect.w,
+        exit.rect.h,
+        Color::from_rgba(37, 42, 47, 210),
+    );
+    draw_rectangle_lines(
+        exit.rect.x,
+        exit.rect.y,
+        exit.rect.w,
+        exit.rect.h,
+        3.0,
+        Color::from_rgba(120, 129, 137, 230),
+    );
+
+    let mut stripe_x = exit.rect.x - exit.rect.h;
+    while stripe_x < exit.rect.x + exit.rect.w {
+        draw_line(
+            stripe_x,
+            exit.rect.y + exit.rect.h,
+            stripe_x + exit.rect.h,
+            exit.rect.y,
+            2.0,
+            Color::from_rgba(160, 168, 176, 90),
+        );
+        stripe_x += 18.0;
+    }
+
+    draw_rectangle(
+        exit.rect.x - 12.0,
+        exit.rect.y - 30.0,
+        168.0,
+        24.0,
+        Color::from_rgba(0, 0, 0, 190),
+    );
+    draw_text("bloque", exit.rect.x, exit.rect.y - 12.0, 19.0, LIGHTGRAY);
+    draw_text(
+        reason,
+        exit.rect.x - 16.0,
+        exit.rect.y + exit.rect.h + 24.0,
+        18.0,
+        LIGHTGRAY,
+    );
 }
 
 fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
@@ -304,8 +360,8 @@ fn available_actions(state: &GameState) -> Vec<String> {
 
     for exit in scene.exits {
         if point_near_rect(state.player_pos, exit.rect, 12.0) {
-            if state.scene == SceneId::Depart && !state.knows(Spell::Cd) {
-                actions.push("Sortie bloquee: parle a la Palourde".to_string());
+            if let Some(reason) = exit_locked_reason(state, exit) {
+                actions.push(format!("Sortie bloquee: {reason}"));
             } else if state.knows(Spell::Cd) {
                 actions.push(format!("cd: aller vers {}", exit.label));
             }

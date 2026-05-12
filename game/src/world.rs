@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-use crate::state::SceneId;
+use crate::state::{GameState, SceneId, Spell};
 
 pub const TRAINING_BOX: Rect = Rect::new(555.0, 500.0, 170.0, 90.0);
 
@@ -154,4 +154,14 @@ pub fn scene_def(id: SceneId) -> SceneDef {
             actors: EMPTY_ACTORS,
         },
     }
+}
+
+pub fn exit_locked_reason(state: &GameState, exit: &Exit) -> Option<&'static str> {
+    let _ = exit;
+
+    if state.scene == SceneId::Depart && !state.knows(Spell::Cd) {
+        return Some("Parle a la Palourde");
+    }
+
+    None
 }
