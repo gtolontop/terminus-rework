@@ -17,6 +17,12 @@ pub enum DialogId {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DialogReward {
+    StarterSpells,
+    Spell(Spell),
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SceneId {
     Depart,
     Prairie,
@@ -94,6 +100,7 @@ pub struct GameState {
     pub pillars: [ActorState; 3],
     pub intro_step: usize,
     pub solved_training_room: bool,
+    pub pending_dialog_reward: Option<DialogReward>,
     pub toast: Option<String>,
 }
 
@@ -131,6 +138,7 @@ impl Default for GameState {
             ],
             intro_step: 0,
             solved_training_room: false,
+            pending_dialog_reward: None,
             toast: None,
         }
     }

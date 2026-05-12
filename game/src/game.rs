@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::input::InputFrame;
 use crate::render::{draw_dialog_overlay, draw_game};
-use crate::state::{AppMode, CarryKind, DialogId, Facing, GameState, Spell};
+use crate::state::{AppMode, CarryKind, DialogId, DialogReward, Facing, GameState, Spell};
 use crate::world::{TRAINING_BOX, scene_def};
 
 pub struct Game {
@@ -39,7 +39,14 @@ impl Game {
             AppMode::Playing => {
                 self.update_playing(input);
             }
-            AppMode::Dialog(_) | AppMode::Complete => {
+            AppMode::Dialog(_) => {
+                if input.confirm {
+                    self.apply_dialog_reward();
+                    self.state.pending_dialog_reward = None;
+                    self.state.mode = AppMode::Playing;
+                }
+            }
+            AppMode::Complete => {
                 if input.confirm {
                     self.state.mode = AppMode::Playing;
                 }
@@ -65,11 +72,11 @@ impl Game {
         let scene = scene_def(self.state.scene);
         if input.cat {
             if let Some(dialog) = self.find_cat_dialog() {
-                match dialog {
-                    DialogId::Palourde => self.state.learn_starter_spells(),
-                    DialogId::Professor => self.state.learn(Spell::Mv),
-                    DialogId::Sign => {}
-                }
+                self.state.pending_dialog_reward = match dialog {
+                    DialogId::Palourde => Some(DialogReward::StarterSpells),
+                    DialogId::Professor => Some(DialogReward::Spell(Spell::Mv)),
+                    DialogId::Sign => None,
+                };
                 self.state.mode = AppMode::Dialog(dialog);
                 return;
             }
@@ -114,7 +121,7 @@ impl Game {
             if self.state.player_pos.distance(actor.pos) <= actor.radius + 38.0 {
                 return match actor.id {
                     "palourde" => Some(DialogId::Palourde),
-                    "sign" => Some(DialogId::Sign),
+                    "sign" if self.state.knows(Spell::Cat) => Some(DialogId::Sign),
                     _ => None,
                 };
             }
@@ -122,12 +129,21 @@ impl Game {
 
         if self.state.professor.scene == self.state.scene
             && !self.state.professor.boxed
+            && self.state.knows(Spell::Cat)
             && self.state.player_pos.distance(self.state.professor.pos) <= 86.0
         {
             return Some(DialogId::Professor);
         }
 
         None
+    }
+
+    fn apply_dialog_reward(&mut self) {
+        match self.state.pending_dialog_reward {
+            Some(DialogReward::StarterSpells) => self.state.learn_starter_spells(),
+            Some(DialogReward::Spell(spell)) => self.state.learn(spell),
+            None => {}
+        }
     }
 
     fn find_movable(&self) -> Option<CarryKind> {
