@@ -20,10 +20,8 @@ cargo run
 
 - Fleches ou WASD : deplacement
 - Entree/Espace : valider menu, intro, dialogues
-- C ou Espace : parler / utiliser `cat` quand il est appris
-- P : `pwd`, apres l'avoir appris
-- M : `mv` prendre, apres l'avoir appris
-- V : `mv` poser, apres l'avoir appris
+- Les autres actions sont affichees en bas dans `Possible ici`.
+- Le jeu n'affiche `pwd`, `mv`, les sorties et les interactions que quand elles sont vraiment disponibles.
 
 ## Tranche implementee
 
