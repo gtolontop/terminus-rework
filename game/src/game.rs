@@ -3,6 +3,7 @@ use macroquad::prelude::*;
 use crate::input::InputFrame;
 use crate::render::draw_game;
 use crate::state::{AppMode, GameState};
+use crate::world::scene_def;
 
 pub struct Game {
     state: GameState,
@@ -33,14 +34,29 @@ impl Game {
                 }
             }
             AppMode::Playing => {
-                self.state.player_pos += input.direction * 260.0 * get_frame_time();
-                self.state.player_pos.x = self.state.player_pos.x.clamp(70.0, 1210.0);
-                self.state.player_pos.y = self.state.player_pos.y.clamp(120.0, 620.0);
+                self.update_playing(input);
             }
             AppMode::Dialog(_) | AppMode::Complete => {
                 if input.confirm {
                     self.state.mode = AppMode::Playing;
                 }
+            }
+        }
+    }
+
+    fn update_playing(&mut self, input: InputFrame) {
+        self.state.player_pos += input.direction * 260.0 * get_frame_time();
+        self.state.player_pos.x = self.state.player_pos.x.clamp(70.0, 1210.0);
+        self.state.player_pos.y = self.state.player_pos.y.clamp(120.0, 620.0);
+
+        let scene = scene_def(self.state.scene);
+        for exit in scene.exits {
+            if exit.rect.contains(self.state.player_pos) {
+                self.state.scene = exit.target;
+                self.state.player_pos = exit.spawn;
+                self.state.show_pwd = false;
+                self.state.toast = None;
+                break;
             }
         }
     }
