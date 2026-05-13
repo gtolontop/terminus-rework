@@ -22,7 +22,6 @@ pub struct StaticActor {
 
 pub struct SceneDef {
     pub id: SceneId,
-    pub background: Color,
     pub exits: &'static [Exit],
     pub actors: &'static [StaticActor],
 }
@@ -119,37 +118,31 @@ pub fn scene_def(id: SceneId) -> SceneDef {
     match id {
         SceneId::Depart => SceneDef {
             id,
-            background: Color::from_rgba(43, 81, 65, 255),
             exits: DEPART_EXITS,
             actors: DEPART_ACTORS,
         },
         SceneId::Prairie => SceneDef {
             id,
-            background: Color::from_rgba(78, 112, 58, 255),
             exits: PRAIRIE_EXITS,
             actors: EMPTY_ACTORS,
         },
         SceneId::BoisDesLutins => SceneDef {
             id,
-            background: Color::from_rgba(31, 65, 55, 255),
             exits: BOIS_EXITS,
             actors: BOIS_ACTORS,
         },
         SceneId::AcademieDesBots => SceneDef {
             id,
-            background: Color::from_rgba(54, 66, 92, 255),
             exits: ACADEMIE_EXITS,
             actors: EMPTY_ACTORS,
         },
         SceneId::Cours => SceneDef {
             id,
-            background: Color::from_rgba(71, 62, 86, 255),
             exits: COURS_EXITS,
             actors: EMPTY_ACTORS,
         },
         SceneId::SalleEntrainement => SceneDef {
             id,
-            background: Color::from_rgba(67, 70, 73, 255),
             exits: TRAINING_EXITS,
             actors: EMPTY_ACTORS,
         },

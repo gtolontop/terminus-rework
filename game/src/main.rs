@@ -4,6 +4,7 @@ mod input;
 mod pixel_art;
 mod render;
 mod state;
+mod visual_style;
 mod world;
 
 use assets::GameAssets;

@@ -3,6 +3,7 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, GameState, SceneId, Spell};
+use crate::visual_style::draw_pixel_scene;
 use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
@@ -46,16 +47,7 @@ pub fn draw_dialog_overlay(dialog: DialogId) {
 }
 
 fn draw_scene_floor(scene: &SceneDef) {
-    clear_background(scene.background);
-    draw_rectangle(40.0, 90.0, 1200.0, 560.0, Color::from_rgba(12, 15, 20, 95));
-    draw_rectangle_lines(
-        40.0,
-        90.0,
-        1200.0,
-        560.0,
-        4.0,
-        Color::from_rgba(230, 235, 225, 130),
-    );
+    draw_pixel_scene(scene.id);
     draw_text(scene.id.label(), 48.0, 70.0, 32.0, WHITE);
 }
 
