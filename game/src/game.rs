@@ -74,20 +74,16 @@ impl Game {
             self.state.player_facing = Facing::Down;
         }
 
-        self.state.player_pos += input.direction * 260.0 * delta;
-        let bounds = layout::VIRTUAL_PLAY;
-        self.state.player_pos.x = self
-            .state
-            .player_pos
-            .x
-            .clamp(bounds.x + 30.0, bounds.x + bounds.w - 30.0);
-        self.state.player_pos.y = self
-            .state
-            .player_pos
-            .y
-            .clamp(bounds.y + 30.0, bounds.y + bounds.h - 30.0);
-
         let scene = scene_def(self.state.scene);
+        let proposed_pos =
+            clamped_player_pos(self.state.player_pos + input.direction * 260.0 * delta);
+        if let Some(reason) = blocked_exit_at(&self.state, proposed_pos) {
+            self.state.player_moving = false;
+            self.state.toast = Some(reason.to_string());
+        } else {
+            self.state.player_pos = proposed_pos;
+        }
+
         if input.cat {
             if let Some(dialog) = self.find_cat_dialog() {
                 self.state.pending_dialog_reward = match dialog {
@@ -122,7 +118,6 @@ impl Game {
         for exit in scene.exits {
             if exit.rect.contains(self.state.player_pos) {
                 if let Some(reason) = exit_locked_reason(&self.state, exit) {
-                    self.state.player_pos -= input.direction * 34.0;
                     self.state.toast = Some(reason.to_string());
                     break;
                 }
@@ -242,6 +237,24 @@ impl Game {
             }
         }
     }
+}
+
+fn clamped_player_pos(pos: Vec2) -> Vec2 {
+    let bounds = layout::VIRTUAL_PLAY;
+    vec2(
+        pos.x.clamp(bounds.x + 30.0, bounds.x + bounds.w - 30.0),
+        pos.y.clamp(bounds.y + 30.0, bounds.y + bounds.h - 30.0),
+    )
+}
+
+fn blocked_exit_at(state: &GameState, pos: Vec2) -> Option<&'static str> {
+    let scene = scene_def(state.scene);
+    scene.exits.iter().find_map(|exit| {
+        exit.rect
+            .contains(pos)
+            .then(|| exit_locked_reason(state, exit))
+            .flatten()
+    })
 }
 
 fn draw_intro(step: usize) {
