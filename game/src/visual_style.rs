@@ -1,8 +1,8 @@
 use macroquad::prelude::*;
 
+use crate::layout;
 use crate::state::SceneId;
 
-const PLAY_AREA: Rect = Rect::new(40.0, 90.0, 1200.0, 560.0);
 const TILE: f32 = 128.0;
 
 #[derive(Clone, Copy)]
@@ -93,31 +93,33 @@ pub fn draw_ambient_pixels(scene: SceneId, time: f32) {
 }
 
 fn draw_play_area(colors: ScenePalette) {
+    let play_area = layout::play_rect();
     draw_rectangle(
-        PLAY_AREA.x,
-        PLAY_AREA.y,
-        PLAY_AREA.w,
-        PLAY_AREA.h,
+        play_area.x,
+        play_area.y,
+        play_area.w,
+        play_area.h,
         colors.floor,
     );
     draw_rectangle_lines(
-        PLAY_AREA.x + 8.0,
-        PLAY_AREA.y + 8.0,
-        PLAY_AREA.w - 16.0,
-        PLAY_AREA.h - 16.0,
+        play_area.x,
+        play_area.y,
+        play_area.w,
+        play_area.h,
         2.0,
-        Color::from_rgba(10, 12, 16, 120),
+        Color::from_rgba(224, 236, 220, 155),
     );
 }
 
 fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option<&Texture2D>) {
-    let cols = (PLAY_AREA.w / TILE).ceil() as i32;
-    let rows = (PLAY_AREA.h / TILE).ceil() as i32;
+    let play_area = layout::play_rect();
+    let cols = (play_area.w / TILE).ceil() as i32;
+    let rows = (play_area.h / TILE).ceil() as i32;
 
     for row in 0..rows {
         for col in 0..cols {
-            let x = PLAY_AREA.x + col as f32 * TILE;
-            let y = PLAY_AREA.y + row as f32 * TILE;
+            let x = play_area.x + col as f32 * TILE;
+            let y = play_area.y + row as f32 * TILE;
             if let Some(tile) = terrain_tile {
                 let jitter_x = (hash2(col, row) % 5 - 2) as f32;
                 let jitter_y = (hash2(row, col) % 5 - 2) as f32;
@@ -199,6 +201,7 @@ fn draw_tile_motion(scene: SceneId, colors: ScenePalette, time: f32) {
 }
 
 fn draw_waving_grass(scene: SceneId, colors: ScenePalette, time: f32) {
+    let play_area = layout::play_rect();
     let density = match scene {
         SceneId::Prairie => 46,
         SceneId::BoisDesLutins => 26,
@@ -207,8 +210,8 @@ fn draw_waving_grass(scene: SceneId, colors: ScenePalette, time: f32) {
 
     for index in 0..density {
         let seed = hash2(index * 11, index * 29);
-        let x = PLAY_AREA.x + 34.0 + (seed % (PLAY_AREA.w as i32 - 68)) as f32;
-        let y = PLAY_AREA.y + 34.0 + ((seed / 13) % (PLAY_AREA.h as i32 - 68)) as f32;
+        let x = play_area.x + 34.0 + (seed % (play_area.w as i32 - 68)) as f32;
+        let y = play_area.y + 34.0 + ((seed / 13) % (play_area.h as i32 - 68)) as f32;
         let height = 9.0 + (seed % 7) as f32;
         let sway = (time * 1.8 + index as f32 * 0.61).sin() * 3.0;
         let alpha = match scene {
@@ -253,10 +256,11 @@ fn draw_vignette() {
 }
 
 fn draw_fireflies(colors: ScenePalette, time: f32) {
+    let play_area = layout::play_rect();
     for index in 0..18 {
         let seed = hash2(index, index * 7) as f32;
-        let x = PLAY_AREA.x + 80.0 + (seed % 1020.0);
-        let y = PLAY_AREA.y + 70.0 + ((seed / 11.0) % 410.0);
+        let x = play_area.x + 80.0 + (seed % (play_area.w - 160.0).max(1.0));
+        let y = play_area.y + 70.0 + ((seed / 11.0) % (play_area.h - 140.0).max(1.0));
         let bob = (time * 1.8 + index as f32).sin() * 5.0;
         let alpha = 90 + ((time * 2.4 + index as f32).sin().abs() * 120.0) as u8;
         draw_rectangle(
@@ -275,10 +279,11 @@ fn draw_fireflies(colors: ScenePalette, time: f32) {
 }
 
 fn draw_magic_dust(colors: ScenePalette, time: f32) {
+    let play_area = layout::play_rect();
     for index in 0..24 {
         let seed = hash2(index * 5, index * 13) as f32;
-        let x = PLAY_AREA.x + 70.0 + (seed % 1060.0);
-        let y = PLAY_AREA.y + 80.0 + ((seed / 9.0 + time * 18.0) % 390.0);
+        let x = play_area.x + 70.0 + (seed % (play_area.w - 140.0).max(1.0));
+        let y = play_area.y + 80.0 + ((seed / 9.0 + time * 18.0) % (play_area.h - 160.0).max(1.0));
         draw_rectangle(
             x,
             y,
@@ -290,10 +295,11 @@ fn draw_magic_dust(colors: ScenePalette, time: f32) {
 }
 
 fn draw_training_sparks(colors: ScenePalette, time: f32) {
+    let play_area = layout::play_rect();
     for index in 0..12 {
         let seed = hash2(index * 3, index * 19) as f32;
-        let x = PLAY_AREA.x + 130.0 + (seed % 920.0);
-        let y = PLAY_AREA.y + 120.0 + ((seed / 17.0) % 300.0);
+        let x = play_area.x + 130.0 + (seed % (play_area.w - 260.0).max(1.0));
+        let y = play_area.y + 120.0 + ((seed / 17.0) % (play_area.h - 240.0).max(1.0));
         let blink = (time * 4.0 + index as f32).sin().max(0.0);
         draw_rectangle(
             x,
