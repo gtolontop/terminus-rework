@@ -74,6 +74,7 @@ pub fn draw_pixel_scene(scene: SceneId, terrain_tile: Option<&Texture2D>) {
     draw_play_area(colors);
     draw_scene_texture(scene, colors, terrain_tile);
     draw_tile_motion(scene, colors, get_time() as f32);
+    draw_play_frame(colors);
     draw_vignette();
 }
 
@@ -101,14 +102,6 @@ fn draw_play_area(colors: ScenePalette) {
         play_area.h,
         colors.floor,
     );
-    draw_rectangle_lines(
-        play_area.x,
-        play_area.y,
-        play_area.w,
-        play_area.h,
-        2.0,
-        Color::from_rgba(224, 236, 220, 155),
-    );
 }
 
 fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option<&Texture2D>) {
@@ -121,15 +114,13 @@ fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option
             let x = play_area.x + col as f32 * TILE;
             let y = play_area.y + row as f32 * TILE;
             if let Some(tile) = terrain_tile {
-                let jitter_x = (hash2(col, row) % 5 - 2) as f32;
-                let jitter_y = (hash2(row, col) % 5 - 2) as f32;
                 draw_texture_ex(
                     tile,
-                    x + jitter_x,
-                    y + jitter_y,
+                    x,
+                    y,
                     WHITE,
                     DrawTextureParams {
-                        dest_size: Some(vec2(TILE + 4.0, TILE + 4.0)),
+                        dest_size: Some(vec2(TILE, TILE)),
                         ..Default::default()
                     },
                 );
@@ -157,6 +148,52 @@ fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option
             }
         }
     }
+}
+
+fn draw_play_frame(colors: ScenePalette) {
+    let play = layout::play_rect();
+
+    draw_rectangle(0.0, 0.0, screen_width(), play.y, colors.void);
+    draw_rectangle(
+        0.0,
+        play.y + play.h,
+        screen_width(),
+        screen_height() - play.y - play.h,
+        colors.void,
+    );
+    draw_rectangle(0.0, play.y, play.x, play.h, colors.void);
+    draw_rectangle(
+        play.x + play.w,
+        play.y,
+        screen_width() - play.x - play.w,
+        play.h,
+        colors.void,
+    );
+
+    draw_rectangle_lines(
+        play.x - 3.0,
+        play.y - 3.0,
+        play.w + 6.0,
+        play.h + 6.0,
+        3.0,
+        Color::from_rgba(8, 14, 15, 240),
+    );
+    draw_rectangle_lines(
+        play.x,
+        play.y,
+        play.w,
+        play.h,
+        2.0,
+        Color::from_rgba(126, 220, 174, 210),
+    );
+    draw_rectangle_lines(
+        play.x + 5.0,
+        play.y + 5.0,
+        play.w - 10.0,
+        play.h - 10.0,
+        1.0,
+        Color::from_rgba(222, 238, 224, 70),
+    );
 }
 
 fn draw_grass_detail(x: f32, y: f32, col: i32, row: i32, colors: ScenePalette) {
