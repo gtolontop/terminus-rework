@@ -38,3 +38,11 @@ cargo run
 - Salle d'entrainement
 - Piliers deplacables avec `mv`
 - Boite qui valide la premiere partie quand les trois piliers sont ranges
+
+## Direction visuelle
+
+- Textures pixel art procedurales par zone
+- Petites animations d'ambiance selon le lieu
+- Sorties ouvertes avec pulsation lumineuse
+- Sorties bloquees grisées avec hachures
+- HUD et dialogues en panneaux style terminal
