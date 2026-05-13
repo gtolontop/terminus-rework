@@ -92,16 +92,6 @@ pub fn draw_ambient_pixels(scene: SceneId, time: f32) {
     }
 }
 
-pub fn pulse_color(color: Color, time: f32, speed: f32, amount: f32) -> Color {
-    let pulse = 1.0 + time.sin() * speed * amount;
-    Color::new(
-        (color.r * pulse).min(1.0),
-        (color.g * pulse).min(1.0),
-        (color.b * pulse).min(1.0),
-        color.a,
-    )
-}
-
 fn draw_play_area(colors: ScenePalette) {
     draw_rectangle(
         PLAY_AREA.x,

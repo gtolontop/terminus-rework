@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, Facing, GameState, SceneId, Spell};
-use crate::visual_style::{draw_ambient_pixels, draw_pixel_scene, palette, pulse_color};
+use crate::visual_style::{draw_ambient_pixels, draw_pixel_scene, palette};
 use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
@@ -58,10 +58,13 @@ fn draw_exits(scene: &SceneDef, state: &GameState) {
 }
 
 fn draw_open_exit(exit: &Exit) {
-    let time = get_time() as f32;
-    let glow = pulse_color(Color::from_rgba(243, 190, 84, 180), time * 3.0, 0.35, 0.55);
-
-    draw_rectangle(exit.rect.x, exit.rect.y, exit.rect.w, exit.rect.h, glow);
+    draw_rectangle(
+        exit.rect.x,
+        exit.rect.y,
+        exit.rect.w,
+        exit.rect.h,
+        Color::from_rgba(180, 146, 72, 128),
+    );
     draw_rectangle_lines(
         exit.rect.x,
         exit.rect.y,
@@ -71,16 +74,6 @@ fn draw_open_exit(exit: &Exit) {
         Color::from_rgba(255, 229, 157, 220),
     );
     draw_text(exit.label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
-
-    let sweep = (time * 42.0) % (exit.rect.h + 40.0);
-    draw_line(
-        exit.rect.x + 5.0,
-        exit.rect.y + sweep - 20.0,
-        exit.rect.x + exit.rect.w - 5.0,
-        exit.rect.y + sweep,
-        3.0,
-        Color::from_rgba(255, 250, 202, 120),
-    );
 }
 
 fn draw_locked_exit(exit: &Exit, reason: &str) {
@@ -101,17 +94,18 @@ fn draw_locked_exit(exit: &Exit, reason: &str) {
         Color::from_rgba(112, 126, 120, 180),
     );
 
-    let mut stripe_x = exit.rect.x - exit.rect.h;
-    while stripe_x < exit.rect.x + exit.rect.w {
+    let line_color = Color::from_rgba(160, 178, 168, 36);
+    let mut y = exit.rect.y + 16.0;
+    while y < exit.rect.y + exit.rect.h - 12.0 {
         draw_line(
-            stripe_x,
-            exit.rect.y + exit.rect.h,
-            stripe_x + exit.rect.h,
-            exit.rect.y,
-            2.0,
-            Color::from_rgba(160, 178, 168, 42),
+            exit.rect.x + 8.0,
+            y,
+            exit.rect.x + exit.rect.w - 8.0,
+            y,
+            1.0,
+            line_color,
         );
-        stripe_x += 18.0;
+        y += 18.0;
     }
 
     let label = "bloque";
