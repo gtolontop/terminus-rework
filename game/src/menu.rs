@@ -10,6 +10,7 @@ pub fn draw_menu() {
     clear_background(Color::from_rgba(8, 10, 13, 255));
     draw_scanlines(time);
     draw_title_card(time);
+    draw_start_preview(time);
     draw_prompt(time);
 }
 
@@ -146,9 +147,90 @@ fn draw_prompt(time: f32) {
     let pulse = 0.55 + (time * 3.0).sin().abs() * 0.45;
     let label = "[ Entree / Espace ] lancer la session";
     let x = screen_width() / 2.0 - measure_text(label, None, 26, 1.0).width / 2.0;
-    draw_text(label, x, 525.0, 26.0, Color::new(0.64, 0.72, 0.68, pulse));
+    draw_text(label, x, 585.0, 26.0, Color::new(0.64, 0.72, 0.68, pulse));
 
     let sub = "terminus://depart  -  build rust";
     let sx = screen_width() / 2.0 - measure_text(sub, None, 18, 1.0).width / 2.0;
-    draw_text(sub, sx, 560.0, 18.0, Color::from_rgba(80, 110, 96, 255));
+    draw_text(sub, sx, 620.0, 18.0, Color::from_rgba(80, 110, 96, 255));
+}
+
+fn draw_start_preview(time: f32) {
+    let rect = Rect::new(screen_width() / 2.0 - 250.0, 486.0, 500.0, 64.0);
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::from_rgba(2, 5, 6, 210),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2.0, DIM_GREEN);
+
+    draw_text("depart:", rect.x + 18.0, rect.y + 40.0, 22.0, GREEN);
+    draw_mini_player(vec2(rect.x + 146.0, rect.y + 38.0), time);
+    draw_mini_palourde(vec2(rect.x + 242.0, rect.y + 38.0), time);
+    draw_text(
+        "parler -> apprendre cd/cat/ls/pwd",
+        rect.x + 285.0,
+        rect.y + 39.0,
+        18.0,
+        PAPER,
+    );
+}
+
+fn draw_mini_player(center: Vec2, time: f32) {
+    let y = center.y + (time * 5.0).sin() * 2.0;
+    draw_rectangle(
+        center.x - 7.0,
+        y - 20.0,
+        14.0,
+        12.0,
+        Color::from_rgba(210, 148, 92, 255),
+    );
+    draw_rectangle(
+        center.x - 9.0,
+        y - 10.0,
+        18.0,
+        16.0,
+        Color::from_rgba(38, 108, 225, 255),
+    );
+    draw_rectangle(
+        center.x - 8.0,
+        y + 5.0,
+        6.0,
+        14.0,
+        Color::from_rgba(18, 23, 38, 255),
+    );
+    draw_rectangle(
+        center.x + 2.0,
+        y + 5.0,
+        6.0,
+        14.0,
+        Color::from_rgba(18, 23, 38, 255),
+    );
+    draw_rectangle(
+        center.x - 10.0,
+        y - 25.0,
+        20.0,
+        6.0,
+        Color::from_rgba(24, 13, 10, 255),
+    );
+}
+
+fn draw_mini_palourde(center: Vec2, time: f32) {
+    let open = 7.0 + (time * 3.0).sin().abs() * 5.0;
+    draw_circle(
+        center.x,
+        center.y,
+        18.0,
+        Color::from_rgba(196, 113, 180, 255),
+    );
+    draw_rectangle(
+        center.x - 18.0,
+        center.y - open / 2.0,
+        36.0,
+        open,
+        Color::from_rgba(35, 10, 34, 255),
+    );
+    draw_rectangle(center.x - 7.0, center.y - 3.0, 5.0, 5.0, PAPER);
+    draw_rectangle(center.x + 3.0, center.y - 3.0, 5.0, 5.0, PAPER);
 }
