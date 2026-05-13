@@ -8,7 +8,7 @@ use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
     let scene = scene_def(state.scene);
-    draw_scene_floor(&scene);
+    draw_scene_floor(&scene, assets);
     draw_ambient_pixels(scene.id, get_time() as f32);
     draw_exits(&scene, state);
     draw_static_actors(&scene, assets);
@@ -42,8 +42,8 @@ pub fn draw_dialog_overlay(dialog: DialogId) {
     draw_text("[Entree/Espace] fermer", 220.0, 596.0, 20.0, GRAY);
 }
 
-fn draw_scene_floor(scene: &SceneDef) {
-    draw_pixel_scene(scene.id);
+fn draw_scene_floor(scene: &SceneDef, assets: &GameAssets) {
+    draw_pixel_scene(scene.id, assets.terrain_tiles.for_scene(scene.id));
     draw_text(scene.id.label(), 48.0, 70.0, 32.0, WHITE);
 }
 

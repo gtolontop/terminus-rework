@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::state::SceneId;
 
 const PLAY_AREA: Rect = Rect::new(40.0, 90.0, 1200.0, 560.0);
-const TILE: f32 = 32.0;
+const TILE: f32 = 64.0;
 
 #[derive(Clone, Copy)]
 pub struct ScenePalette {
@@ -68,11 +68,11 @@ pub fn palette(scene: SceneId) -> ScenePalette {
     }
 }
 
-pub fn draw_pixel_scene(scene: SceneId) {
+pub fn draw_pixel_scene(scene: SceneId, terrain_tile: Option<&Texture2D>) {
     let colors = palette(scene);
     clear_background(colors.void);
     draw_play_area(colors);
-    draw_scene_texture(scene, colors);
+    draw_scene_texture(scene, colors, terrain_tile);
     draw_vignette();
 }
 
@@ -127,7 +127,7 @@ fn draw_play_area(colors: ScenePalette) {
     );
 }
 
-fn draw_scene_texture(scene: SceneId, colors: ScenePalette) {
+fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option<&Texture2D>) {
     let cols = (PLAY_AREA.w / TILE).ceil() as i32;
     let rows = (PLAY_AREA.h / TILE).ceil() as i32;
 
@@ -135,14 +135,27 @@ fn draw_scene_texture(scene: SceneId, colors: ScenePalette) {
         for col in 0..cols {
             let x = PLAY_AREA.x + col as f32 * TILE;
             let y = PLAY_AREA.y + row as f32 * TILE;
-            let alt = (row + col) % 2 == 0;
-            draw_rectangle(
-                x,
-                y,
-                TILE,
-                TILE,
-                if alt { colors.floor } else { colors.floor_alt },
-            );
+            if let Some(tile) = terrain_tile {
+                draw_texture_ex(
+                    tile,
+                    x,
+                    y,
+                    WHITE,
+                    DrawTextureParams {
+                        dest_size: Some(vec2(TILE, TILE)),
+                        ..Default::default()
+                    },
+                );
+            } else {
+                let alt = (row + col) % 2 == 0;
+                draw_rectangle(
+                    x,
+                    y,
+                    TILE,
+                    TILE,
+                    if alt { colors.floor } else { colors.floor_alt },
+                );
+            }
 
             match scene {
                 SceneId::Depart | SceneId::Prairie | SceneId::BoisDesLutins => {
