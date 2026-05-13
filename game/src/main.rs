@@ -1,6 +1,7 @@
 mod assets;
 mod game;
 mod input;
+mod layout;
 mod menu;
 mod pixel_art;
 mod render;
