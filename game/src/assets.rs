@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 pub struct GameAssets {
+    pub player_sheet: Option<Texture2D>,
     pub professor: Option<Texture2D>,
     pub pillar: Option<Texture2D>,
     pub sign: Option<Texture2D>,
@@ -9,6 +10,11 @@ pub struct GameAssets {
 impl GameAssets {
     pub async fn load() -> Self {
         Self {
+            player_sheet: load_first(&[
+                "assets/sprites/player_sheet.png",
+                "game/assets/sprites/player_sheet.png",
+            ])
+            .await,
             professor: load_first(&[
                 "assets/terminus-rpg/sprites/npcs/professeursprites.png",
                 "../assets/terminus-rpg/sprites/npcs/professeursprites.png",
