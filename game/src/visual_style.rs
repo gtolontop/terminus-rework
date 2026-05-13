@@ -260,7 +260,21 @@ fn draw_training_sparks(colors: ScenePalette, time: f32) {
 }
 
 fn hash2(x: i32, y: i32) -> i32 {
-    let mut n = x * 374_761 + y * 668_265;
-    n = (n ^ (n >> 13)) * 1_274_126_177;
-    (n ^ (n >> 16)).abs()
+    let mut n = x
+        .wrapping_mul(374_761)
+        .wrapping_add(y.wrapping_mul(668_265));
+    n = (n ^ (n >> 13)).wrapping_mul(1_274_126_177);
+    (n ^ (n >> 16)) & i32::MAX
+}
+
+#[cfg(test)]
+mod tests {
+    use super::hash2;
+
+    #[test]
+    fn hash2_stays_inside_positive_i32_range() {
+        for (x, y) in [(0, 0), (18, 126), (i32::MAX, i32::MIN)] {
+            assert!(hash2(x, y) >= 0);
+        }
+    }
 }
