@@ -42,6 +42,7 @@ cargo run
 ## Direction visuelle
 
 - Textures pixel art procedurales par zone
+- Sprite sheet joueur PNG, anime par direction
 - Menu titre anime style terminal
 - Petites animations d'ambiance selon le lieu
 - Sorties ouvertes avec pulsation lumineuse
