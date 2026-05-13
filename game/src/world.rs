@@ -56,7 +56,7 @@ const BOIS_EXITS: &[Exit] = &[
         label: "Depart",
     },
     Exit {
-        rect: Rect::new(530.0, 30.0, 220.0, 60.0),
+        rect: Rect::new(530.0, 90.0, 220.0, 60.0),
         target: SceneId::AcademieDesBots,
         spawn: vec2(640.0, 610.0),
         label: "Academie",
@@ -65,7 +65,7 @@ const BOIS_EXITS: &[Exit] = &[
 
 const ACADEMIE_EXITS: &[Exit] = &[
     Exit {
-        rect: Rect::new(530.0, 640.0, 220.0, 50.0),
+        rect: Rect::new(530.0, 590.0, 220.0, 60.0),
         target: SceneId::BoisDesLutins,
         spawn: vec2(640.0, 120.0),
         label: "Bois",

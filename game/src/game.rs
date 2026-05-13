@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
 use crate::input::InputFrame;
+use crate::layout;
 use crate::menu::draw_menu;
 use crate::render::{draw_dialog_overlay, draw_game};
 use crate::state::{AppMode, CarryKind, DialogId, DialogReward, Facing, GameState, Spell};
@@ -74,8 +75,17 @@ impl Game {
         }
 
         self.state.player_pos += input.direction * 260.0 * delta;
-        self.state.player_pos.x = self.state.player_pos.x.clamp(70.0, 1210.0);
-        self.state.player_pos.y = self.state.player_pos.y.clamp(120.0, 620.0);
+        let bounds = layout::VIRTUAL_PLAY;
+        self.state.player_pos.x = self
+            .state
+            .player_pos
+            .x
+            .clamp(bounds.x + 30.0, bounds.x + bounds.w - 30.0);
+        self.state.player_pos.y = self
+            .state
+            .player_pos
+            .y
+            .clamp(bounds.y + 30.0, bounds.y + bounds.h - 30.0);
 
         let scene = scene_def(self.state.scene);
         if input.cat {
