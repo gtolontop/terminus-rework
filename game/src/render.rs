@@ -33,18 +33,13 @@ pub fn draw_dialog_overlay(dialog: DialogId) {
         ),
     };
 
-    draw_rectangle(190.0, 470.0, 900.0, 150.0, Color::from_rgba(0, 0, 0, 220));
-    draw_rectangle_lines(
-        190.0,
-        470.0,
-        900.0,
-        150.0,
-        3.0,
+    draw_terminal_panel(
+        Rect::new(190.0, 470.0, 900.0, 150.0),
         Color::from_rgba(245, 235, 180, 255),
     );
-    draw_text(title, 220.0, 515.0, 30.0, YELLOW);
+    draw_text(&format!("> {title}"), 220.0, 515.0, 30.0, YELLOW);
     draw_text(body, 220.0, 560.0, 24.0, WHITE);
-    draw_text("Entree/Espace pour fermer", 220.0, 596.0, 20.0, GRAY);
+    draw_text("[Entree/Espace] fermer", 220.0, 596.0, 20.0, GRAY);
 }
 
 fn draw_scene_floor(scene: &SceneDef) {
@@ -272,19 +267,29 @@ fn draw_hud(state: &GameState) {
             .collect::<Vec<_>>()
             .join("  ")
     };
-    draw_text(&format!("Sorts appris: {spells}"), 48.0, 682.0, 21.0, WHITE);
+    draw_terminal_panel(
+        Rect::new(34.0, 650.0, 1212.0, 62.0),
+        Color::from_rgba(128, 239, 190, 210),
+    );
+    draw_text(
+        &format!("Sorts appris: {spells}"),
+        52.0,
+        676.0,
+        20.0,
+        Color::from_rgba(206, 255, 224, 255),
+    );
 
     let actions = available_actions(state);
     draw_text(
-        &format!("Possible ici: {}", actions.join("   |   ")),
-        48.0,
-        710.0,
+        &format!("Possible ici > {}", actions.join("   |   ")),
+        52.0,
+        702.0,
         20.0,
-        GRAY,
+        Color::from_rgba(190, 206, 214, 255),
     );
 
     if state.show_pwd {
-        draw_rectangle(48.0, 96.0, 300.0, 48.0, Color::from_rgba(0, 0, 0, 175));
+        draw_terminal_panel(Rect::new(48.0, 96.0, 318.0, 48.0), YELLOW);
         draw_text(
             &format!("pwd -> {}", state.scene.label()),
             62.0,
@@ -295,7 +300,10 @@ fn draw_hud(state: &GameState) {
     }
 
     if let Some(toast) = &state.toast {
-        draw_rectangle(430.0, 24.0, 420.0, 46.0, Color::from_rgba(0, 0, 0, 190));
+        draw_terminal_panel(
+            Rect::new(430.0, 24.0, 420.0, 46.0),
+            Color::from_rgba(150, 240, 180, 255),
+        );
         draw_text(
             toast,
             448.0,
@@ -304,6 +312,31 @@ fn draw_hud(state: &GameState) {
             Color::from_rgba(150, 240, 180, 255),
         );
     }
+}
+
+fn draw_terminal_panel(rect: Rect, accent: Color) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::from_rgba(4, 8, 10, 224),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2.0, accent);
+    draw_rectangle(
+        rect.x + 5.0,
+        rect.y + 5.0,
+        rect.w - 10.0,
+        2.0,
+        Color::new(accent.r, accent.g, accent.b, 0.22),
+    );
+    draw_rectangle(
+        rect.x + 5.0,
+        rect.y + rect.h - 7.0,
+        rect.w - 10.0,
+        2.0,
+        Color::new(accent.r, accent.g, accent.b, 0.12),
+    );
 }
 
 fn available_actions(state: &GameState) -> Vec<String> {
