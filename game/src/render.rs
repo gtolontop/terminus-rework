@@ -101,14 +101,7 @@ fn draw_locked_exit(exit: &Exit, reason: &str) {
     let line_color = Color::from_rgba(160, 178, 168, 36);
     let mut y = rect.y + 16.0;
     while y < rect.y + rect.h - 12.0 {
-        draw_line(
-            rect.x + 8.0,
-            y,
-            rect.x + rect.w - 8.0,
-            y,
-            1.0,
-            line_color,
-        );
+        draw_line(rect.x + 8.0, y, rect.x + rect.w - 8.0, y, 1.0, line_color);
         y += 18.0;
     }
 
@@ -129,7 +122,11 @@ fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
         let pos = layout::world_to_screen(actor.pos);
         let scale = layout::world_scale();
         if actor.id == "sign" {
-            draw_texture_centered(assets.sign.as_ref(), pos, layout::scale_vec(vec2(86.0, 86.0)));
+            draw_texture_centered(
+                assets.sign.as_ref(),
+                pos,
+                layout::scale_vec(vec2(86.0, 86.0)),
+            );
         } else if actor.id == "palourde" {
             draw_palourde(pos, assets);
         } else {
@@ -187,7 +184,11 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     {
         let pos = layout::world_to_screen(state.professor.pos);
         draw_actor_shadow(pos, 32.0 * scale, 9.0 * scale);
-        draw_texture_centered(assets.professor.as_ref(), pos, layout::scale_vec(vec2(92.0, 92.0)));
+        draw_texture_centered(
+            assets.professor.as_ref(),
+            pos,
+            layout::scale_vec(vec2(92.0, 92.0)),
+        );
         draw_text(
             "Professeur",
             pos.x - 48.0 * scale,
@@ -202,7 +203,11 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
         if pillar.scene == state.scene && !pillar.boxed && state.carried != Some(kind) {
             let pos = layout::world_to_screen(pillar.pos);
             draw_actor_shadow(pos + vec2(0.0, 48.0 * scale), 30.0 * scale, 8.0 * scale);
-            draw_texture_centered(assets.pillar.as_ref(), pos, layout::scale_vec(vec2(72.0, 118.0)));
+            draw_texture_centered(
+                assets.pillar.as_ref(),
+                pos,
+                layout::scale_vec(vec2(72.0, 118.0)),
+            );
             draw_text(
                 &format!("Pilier {}", index + 1),
                 pos.x - 40.0 * scale,
@@ -217,7 +222,13 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
         let colors = palette(state.scene);
         draw_training_box(colors);
         let box_rect = layout::rect_to_screen(TRAINING_BOX);
-        draw_text("Boite", box_rect.x + 55.0 * scale, box_rect.y + 54.0 * scale, 24.0 * scale, WHITE);
+        draw_text(
+            "Boite",
+            box_rect.x + 55.0 * scale,
+            box_rect.y + 54.0 * scale,
+            24.0 * scale,
+            WHITE,
+        );
     }
 }
 
@@ -411,10 +422,7 @@ fn draw_hud(state: &GameState) {
     if let Some(toast) = &state.toast {
         let play = layout::play_rect();
         let rect = Rect::new(play.x + play.w / 2.0 - 210.0, play.y - 70.0, 420.0, 46.0);
-        draw_terminal_panel(
-            rect,
-            Color::from_rgba(150, 240, 180, 255),
-        );
+        draw_terminal_panel(rect, Color::from_rgba(150, 240, 180, 255));
         draw_text(
             toast,
             rect.x + 18.0,
