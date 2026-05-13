@@ -41,7 +41,8 @@ cargo run
 
 ## Direction visuelle
 
-- Textures pixel art procedurales par zone
+- Tiles terrain PNG 64x64 par zone, avec fallback procedural
+- Herbes animees legerement sur les zones naturelles
 - Sprite sheet joueur PNG, anime par direction
 - Menu titre anime style terminal
 - Petites animations d'ambiance selon le lieu
