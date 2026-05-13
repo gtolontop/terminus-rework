@@ -58,6 +58,10 @@ impl Game {
     fn update_playing(&mut self, input: InputFrame) {
         let delta = get_frame_time();
         self.state.exit_cooldown = (self.state.exit_cooldown - delta).max(0.0);
+        self.state.player_moving = input.direction.length_squared() > 0.01;
+        if self.state.player_moving {
+            self.state.player_walk_timer += delta;
+        }
 
         if input.direction.x < -0.1 {
             self.state.player_facing = Facing::Left;
