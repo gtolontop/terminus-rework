@@ -84,20 +84,21 @@ fn draw_open_exit(exit: &Exit) {
 }
 
 fn draw_locked_exit(exit: &Exit, reason: &str) {
+    let _ = reason;
     draw_rectangle(
         exit.rect.x,
         exit.rect.y,
         exit.rect.w,
         exit.rect.h,
-        Color::from_rgba(37, 42, 47, 210),
+        Color::from_rgba(21, 28, 30, 222),
     );
     draw_rectangle_lines(
         exit.rect.x,
         exit.rect.y,
         exit.rect.w,
         exit.rect.h,
-        3.0,
-        Color::from_rgba(120, 129, 137, 230),
+        2.0,
+        Color::from_rgba(112, 126, 120, 180),
     );
 
     let mut stripe_x = exit.rect.x - exit.rect.h;
@@ -108,25 +109,20 @@ fn draw_locked_exit(exit: &Exit, reason: &str) {
             stripe_x + exit.rect.h,
             exit.rect.y,
             2.0,
-            Color::from_rgba(160, 168, 176, 90),
+            Color::from_rgba(160, 178, 168, 42),
         );
         stripe_x += 18.0;
     }
 
-    draw_rectangle(
-        exit.rect.x - 12.0,
-        exit.rect.y - 30.0,
-        168.0,
-        24.0,
-        Color::from_rgba(0, 0, 0, 190),
-    );
-    draw_text("bloque", exit.rect.x, exit.rect.y - 12.0, 19.0, LIGHTGRAY);
+    let label = "bloque";
+    let size = 18;
+    let text = measure_text(label, None, size, 1.0);
     draw_text(
-        reason,
-        exit.rect.x - 16.0,
-        exit.rect.y + exit.rect.h + 24.0,
-        18.0,
-        LIGHTGRAY,
+        label,
+        exit.rect.x + exit.rect.w / 2.0 - text.width / 2.0,
+        exit.rect.y + exit.rect.h / 2.0 + text.height / 2.0,
+        size as f32,
+        Color::from_rgba(185, 196, 190, 210),
     );
 }
 
@@ -134,6 +130,8 @@ fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
     for actor in scene.actors {
         if actor.id == "sign" {
             draw_texture_centered(assets.sign.as_ref(), actor.pos, vec2(86.0, 86.0));
+        } else if actor.id == "palourde" {
+            draw_palourde(actor.pos, assets);
         } else {
             draw_circle(
                 actor.pos.x,
@@ -148,6 +146,35 @@ fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
             actor.pos.y - actor.radius - 14.0,
             20.0,
             WHITE,
+        );
+    }
+}
+
+fn draw_palourde(center: Vec2, assets: &GameAssets) {
+    draw_actor_shadow(center + vec2(0.0, 42.0), 44.0, 10.0);
+    if let Some(sheet) = assets.palourde_sheet.as_ref() {
+        let frame = if (get_time() as f32 * 2.2).sin() > 0.55 {
+            1.0
+        } else {
+            0.0
+        };
+        draw_texture_ex(
+            sheet,
+            center.x - 58.0,
+            center.y - 52.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(vec2(116.0, 116.0)),
+                source: Some(Rect::new(frame * 64.0, 0.0, 64.0, 64.0)),
+                ..Default::default()
+            },
+        );
+    } else {
+        draw_circle(
+            center.x,
+            center.y,
+            48.0,
+            Color::from_rgba(191, 116, 178, 255),
         );
     }
 }

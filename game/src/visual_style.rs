@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::state::SceneId;
 
 const PLAY_AREA: Rect = Rect::new(40.0, 90.0, 1200.0, 560.0);
-const TILE: f32 = 64.0;
+const TILE: f32 = 128.0;
 
 #[derive(Clone, Copy)]
 pub struct ScenePalette {
@@ -111,14 +111,6 @@ fn draw_play_area(colors: ScenePalette) {
         colors.floor,
     );
     draw_rectangle_lines(
-        PLAY_AREA.x,
-        PLAY_AREA.y,
-        PLAY_AREA.w,
-        PLAY_AREA.h,
-        4.0,
-        Color::from_rgba(236, 238, 222, 150),
-    );
-    draw_rectangle_lines(
         PLAY_AREA.x + 8.0,
         PLAY_AREA.y + 8.0,
         PLAY_AREA.w - 16.0,
@@ -137,13 +129,15 @@ fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option
             let x = PLAY_AREA.x + col as f32 * TILE;
             let y = PLAY_AREA.y + row as f32 * TILE;
             if let Some(tile) = terrain_tile {
+                let jitter_x = (hash2(col, row) % 5 - 2) as f32;
+                let jitter_y = (hash2(row, col) % 5 - 2) as f32;
                 draw_texture_ex(
                     tile,
-                    x,
-                    y,
+                    x + jitter_x,
+                    y + jitter_y,
                     WHITE,
                     DrawTextureParams {
-                        dest_size: Some(vec2(TILE, TILE)),
+                        dest_size: Some(vec2(TILE + 4.0, TILE + 4.0)),
                         ..Default::default()
                     },
                 );
@@ -158,14 +152,16 @@ fn draw_scene_texture(scene: SceneId, colors: ScenePalette, terrain_tile: Option
                 );
             }
 
-            match scene {
-                SceneId::Depart | SceneId::Prairie | SceneId::BoisDesLutins => {
-                    draw_grass_detail(x, y, col, row, colors);
+            if terrain_tile.is_none() {
+                match scene {
+                    SceneId::Depart | SceneId::Prairie | SceneId::BoisDesLutins => {
+                        draw_grass_detail(x, y, col, row, colors);
+                    }
+                    SceneId::AcademieDesBots | SceneId::Cours => {
+                        draw_tile_glyph(x, y, col, row, colors)
+                    }
+                    SceneId::SalleEntrainement => draw_stone_detail(x, y, col, row, colors),
                 }
-                SceneId::AcademieDesBots | SceneId::Cours => {
-                    draw_tile_glyph(x, y, col, row, colors)
-                }
-                SceneId::SalleEntrainement => draw_stone_detail(x, y, col, row, colors),
             }
         }
     }
