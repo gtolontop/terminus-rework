@@ -64,14 +64,9 @@ impl Game {
             self.state.player_walk_timer += delta;
         }
 
-        if input.direction.x < -0.1 {
-            self.state.player_facing = Facing::Left;
-        } else if input.direction.x > 0.1 {
-            self.state.player_facing = Facing::Right;
-        } else if input.direction.y < -0.1 {
-            self.state.player_facing = Facing::Up;
-        } else if input.direction.y > 0.1 {
-            self.state.player_facing = Facing::Down;
+        if input.direction.length_squared() > 0.01 {
+            self.state.player_facing =
+                facing_from_direction(input.direction, self.state.player_facing);
         }
 
         let scene = scene_def(self.state.scene);
@@ -255,6 +250,24 @@ fn blocked_exit_at(state: &GameState, pos: Vec2) -> Option<&'static str> {
             .then(|| exit_locked_reason(state, exit))
             .flatten()
     })
+}
+
+fn facing_from_direction(direction: Vec2, current: Facing) -> Facing {
+    if direction.x.abs() > direction.y.abs() {
+        if direction.x < 0.0 {
+            Facing::Left
+        } else {
+            Facing::Right
+        }
+    } else if direction.y.abs() > direction.x.abs() {
+        if direction.y < 0.0 {
+            Facing::Up
+        } else {
+            Facing::Down
+        }
+    } else {
+        current
+    }
 }
 
 fn draw_intro(step: usize) {

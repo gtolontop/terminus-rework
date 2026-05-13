@@ -235,7 +235,7 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
 fn draw_player(state: &GameState, assets: &GameAssets) {
     let pos = layout::world_to_screen(state.player_pos);
     let scale = layout::world_scale();
-    draw_actor_shadow(pos + vec2(0.0, 36.0 * scale), 26.0 * scale, 8.0 * scale);
+    draw_actor_shadow(pos + vec2(0.0, 24.0 * scale), 24.0 * scale, 7.0 * scale);
 
     if let Some(sheet) = assets.player_sheet.as_ref() {
         let frame = player_frame(state);
@@ -253,13 +253,6 @@ fn draw_player(state: &GameState, assets: &GameAssets) {
     } else {
         draw_player_sprite(pos, state.player_facing);
     }
-
-    draw_circle(
-        pos.x,
-        pos.y + 27.0 * scale,
-        3.0 * scale,
-        Color::from_rgba(95, 255, 154, 190),
-    );
 
     if let Some(kind) = state.carried {
         let label = match kind {
