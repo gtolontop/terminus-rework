@@ -73,6 +73,7 @@ pub fn draw_pixel_scene(scene: SceneId, terrain_tile: Option<&Texture2D>) {
     clear_background(colors.void);
     draw_play_area(colors);
     draw_scene_texture(scene, colors, terrain_tile);
+    draw_tile_motion(scene, colors, get_time() as f32);
     draw_vignette();
 }
 
@@ -199,6 +200,52 @@ fn draw_stone_detail(x: f32, y: f32, col: i32, row: i32, colors: ScenePalette) {
     draw_rectangle_lines(x, y, TILE, TILE, 1.0, colors.line);
     if hash2(col, row) % 3 == 0 {
         draw_line(x + 6.0, y + 20.0, x + 26.0, y + 14.0, 2.0, colors.detail);
+    }
+}
+
+fn draw_tile_motion(scene: SceneId, colors: ScenePalette, time: f32) {
+    match scene {
+        SceneId::Depart | SceneId::Prairie | SceneId::BoisDesLutins => {
+            draw_waving_grass(scene, colors, time);
+        }
+        _ => {}
+    }
+}
+
+fn draw_waving_grass(scene: SceneId, colors: ScenePalette, time: f32) {
+    let density = match scene {
+        SceneId::Prairie => 46,
+        SceneId::BoisDesLutins => 26,
+        _ => 30,
+    };
+
+    for index in 0..density {
+        let seed = hash2(index * 11, index * 29);
+        let x = PLAY_AREA.x + 34.0 + (seed % (PLAY_AREA.w as i32 - 68)) as f32;
+        let y = PLAY_AREA.y + 34.0 + ((seed / 13) % (PLAY_AREA.h as i32 - 68)) as f32;
+        let height = 9.0 + (seed % 7) as f32;
+        let sway = (time * 1.8 + index as f32 * 0.61).sin() * 3.0;
+        let alpha = match scene {
+            SceneId::Prairie => 0.68,
+            SceneId::BoisDesLutins => 0.42,
+            _ => 0.48,
+        };
+
+        draw_line(
+            x,
+            y + height,
+            x + sway,
+            y,
+            2.0,
+            Color::new(colors.detail.r, colors.detail.g, colors.detail.b, alpha),
+        );
+        draw_rectangle(
+            x + sway - 1.0,
+            y - 1.0,
+            2.0,
+            2.0,
+            Color::new(colors.glow.r, colors.glow.g, colors.glow.b, alpha * 0.55),
+        );
     }
 }
 
