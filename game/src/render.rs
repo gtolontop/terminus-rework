@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
-use crate::state::{CarryKind, DialogId, GameState, SceneId, Spell};
+use crate::state::{CarryKind, DialogId, Facing, GameState, SceneId, Spell};
 use crate::visual_style::{draw_ambient_pixels, draw_pixel_scene, palette, pulse_color};
 use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
@@ -195,14 +195,30 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
 }
 
 fn draw_player(state: &GameState, assets: &GameAssets) {
-    let _ = assets;
-    draw_player_sprite(state.player_pos, state.player_facing);
-    draw_circle_lines(
+    draw_actor_shadow(state.player_pos + vec2(0.0, 36.0), 26.0, 8.0);
+
+    if let Some(sheet) = assets.player_sheet.as_ref() {
+        let frame = player_frame(state);
+        draw_texture_ex(
+            sheet,
+            state.player_pos.x - 32.0,
+            state.player_pos.y - 72.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(vec2(64.0, 96.0)),
+                source: Some(frame),
+                ..Default::default()
+            },
+        );
+    } else {
+        draw_player_sprite(state.player_pos, state.player_facing);
+    }
+
+    draw_circle(
         state.player_pos.x,
-        state.player_pos.y,
-        28.0,
+        state.player_pos.y + 27.0,
         3.0,
-        Color::from_rgba(240, 255, 245, 210),
+        Color::from_rgba(95, 255, 154, 190),
     );
 
     if let Some(kind) = state.carried {
@@ -218,6 +234,25 @@ fn draw_player(state: &GameState, assets: &GameAssets) {
             YELLOW,
         );
     }
+}
+
+fn player_frame(state: &GameState) -> Rect {
+    const FRAME_W: f32 = 32.0;
+    const FRAME_H: f32 = 48.0;
+
+    let row = match state.player_facing {
+        Facing::Down => 0.0,
+        Facing::Left => 1.0,
+        Facing::Right => 2.0,
+        Facing::Up => 3.0,
+    };
+    let column = if state.player_moving {
+        ((state.player_walk_timer * 9.5) as i32).rem_euclid(4) as f32
+    } else {
+        0.0
+    };
+
+    Rect::new(column * FRAME_W, row * FRAME_H, FRAME_W, FRAME_H)
 }
 
 fn draw_actor_shadow(center: Vec2, radius_x: f32, radius_y: f32) {
