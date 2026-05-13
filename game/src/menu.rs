@@ -27,10 +27,15 @@ fn draw_scanlines(time: f32) {
 }
 
 fn draw_title_card(time: f32) {
-    let card = Rect::new(screen_width() / 2.0 - 350.0, 112.0, 700.0, 360.0);
+    let card = menu_card_rect();
     draw_pixel_frame(card, time);
     draw_terminal_machine(card, time);
     draw_logo(card, time);
+}
+
+fn menu_card_rect() -> Rect {
+    let card_w = (screen_width() * 0.58).clamp(640.0, 760.0);
+    Rect::new(screen_width() / 2.0 - card_w / 2.0, 92.0, card_w, 370.0)
 }
 
 fn draw_pixel_frame(rect: Rect, time: f32) {
@@ -147,15 +152,17 @@ fn draw_prompt(time: f32) {
     let pulse = 0.55 + (time * 3.0).sin().abs() * 0.45;
     let label = "[ Entree / Espace ] lancer la session";
     let x = screen_width() / 2.0 - measure_text(label, None, 26, 1.0).width / 2.0;
-    draw_text(label, x, 585.0, 26.0, Color::new(0.64, 0.72, 0.68, pulse));
+    let y = menu_card_rect().y + menu_card_rect().h + 118.0;
+    draw_text(label, x, y, 26.0, Color::new(0.64, 0.72, 0.68, pulse));
 
     let sub = "terminus://depart  -  build rust";
     let sx = screen_width() / 2.0 - measure_text(sub, None, 18, 1.0).width / 2.0;
-    draw_text(sub, sx, 620.0, 18.0, Color::from_rgba(80, 110, 96, 255));
+    draw_text(sub, sx, y + 35.0, 18.0, Color::from_rgba(80, 110, 96, 255));
 }
 
 fn draw_start_preview(time: f32) {
-    let rect = Rect::new(screen_width() / 2.0 - 250.0, 486.0, 500.0, 64.0);
+    let card = menu_card_rect();
+    let rect = Rect::new(card.x + 82.0, card.y + card.h + 18.0, card.w - 164.0, 64.0);
     draw_rectangle(
         rect.x,
         rect.y,
