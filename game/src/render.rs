@@ -157,6 +157,7 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
         && !state.professor.boxed
         && state.carried != Some(CarryKind::Professor)
     {
+        draw_actor_shadow(state.professor.pos, 32.0, 9.0);
         draw_texture_centered(
             assets.professor.as_ref(),
             state.professor.pos,
@@ -174,6 +175,7 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     for (index, pillar) in state.pillars.iter().enumerate() {
         let kind = CarryKind::Pillar(index);
         if pillar.scene == state.scene && !pillar.boxed && state.carried != Some(kind) {
+            draw_actor_shadow(pillar.pos + vec2(0.0, 48.0), 30.0, 8.0);
             draw_texture_centered(assets.pillar.as_ref(), pillar.pos, vec2(72.0, 118.0));
             draw_text(
                 &format!("Pilier {}", index + 1),
@@ -187,28 +189,7 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
 
     if state.scene == SceneId::SalleEntrainement {
         let colors = palette(state.scene);
-        draw_rectangle(
-            TRAINING_BOX.x,
-            TRAINING_BOX.y,
-            TRAINING_BOX.w,
-            TRAINING_BOX.h,
-            Color::from_rgba(100, 62, 45, 255),
-        );
-        draw_rectangle(
-            TRAINING_BOX.x + 10.0,
-            TRAINING_BOX.y + 12.0,
-            TRAINING_BOX.w - 20.0,
-            12.0,
-            Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.18),
-        );
-        draw_rectangle_lines(
-            TRAINING_BOX.x,
-            TRAINING_BOX.y,
-            TRAINING_BOX.w,
-            TRAINING_BOX.h,
-            3.0,
-            Color::from_rgba(235, 210, 155, 255),
-        );
+        draw_training_box(colors);
         draw_text("Boite", 610.0, 554.0, 24.0, WHITE);
     }
 }
@@ -237,6 +218,72 @@ fn draw_player(state: &GameState, assets: &GameAssets) {
             YELLOW,
         );
     }
+}
+
+fn draw_actor_shadow(center: Vec2, radius_x: f32, radius_y: f32) {
+    draw_ellipse(
+        center.x,
+        center.y,
+        radius_x,
+        radius_y,
+        0.0,
+        Color::from_rgba(0, 0, 0, 75),
+    );
+}
+
+fn draw_training_box(colors: crate::visual_style::ScenePalette) {
+    draw_actor_shadow(
+        vec2(
+            TRAINING_BOX.x + TRAINING_BOX.w / 2.0,
+            TRAINING_BOX.y + TRAINING_BOX.h,
+        ),
+        72.0,
+        11.0,
+    );
+    draw_rectangle(
+        TRAINING_BOX.x,
+        TRAINING_BOX.y,
+        TRAINING_BOX.w,
+        TRAINING_BOX.h,
+        Color::from_rgba(94, 55, 37, 255),
+    );
+    draw_rectangle(
+        TRAINING_BOX.x + 12.0,
+        TRAINING_BOX.y + 14.0,
+        TRAINING_BOX.w - 24.0,
+        14.0,
+        Color::from_rgba(132, 78, 49, 255),
+    );
+    draw_rectangle(
+        TRAINING_BOX.x + 20.0,
+        TRAINING_BOX.y + 50.0,
+        TRAINING_BOX.w - 40.0,
+        10.0,
+        Color::from_rgba(65, 38, 30, 255),
+    );
+    draw_rectangle_lines(
+        TRAINING_BOX.x,
+        TRAINING_BOX.y,
+        TRAINING_BOX.w,
+        TRAINING_BOX.h,
+        4.0,
+        Color::from_rgba(235, 210, 155, 255),
+    );
+    draw_rectangle_lines(
+        TRAINING_BOX.x + 9.0,
+        TRAINING_BOX.y + 9.0,
+        TRAINING_BOX.w - 18.0,
+        TRAINING_BOX.h - 18.0,
+        2.0,
+        Color::from_rgba(45, 28, 24, 220),
+    );
+    draw_rectangle(
+        TRAINING_BOX.x + 10.0,
+        TRAINING_BOX.y + 12.0,
+        TRAINING_BOX.w - 20.0,
+        12.0,
+        Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.18),
+    );
 }
 
 fn draw_texture_centered(texture: Option<&Texture2D>, center: Vec2, size: Vec2) {
