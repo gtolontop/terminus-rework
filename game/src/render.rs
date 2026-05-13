@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
+use crate::layout;
 use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, Facing, GameState, SceneId, Spell};
 use crate::visual_style::{draw_ambient_pixels, draw_pixel_scene, palette};
@@ -44,7 +45,8 @@ pub fn draw_dialog_overlay(dialog: DialogId) {
 
 fn draw_scene_floor(scene: &SceneDef, assets: &GameAssets) {
     draw_pixel_scene(scene.id, assets.terrain_tiles.for_scene(scene.id));
-    draw_text(scene.id.label(), 48.0, 70.0, 32.0, WHITE);
+    let play = layout::play_rect();
+    draw_text(scene.id.label(), play.x + 10.0, play.y - 22.0, 28.0, WHITE);
 }
 
 fn draw_exits(scene: &SceneDef, state: &GameState) {
@@ -58,49 +60,51 @@ fn draw_exits(scene: &SceneDef, state: &GameState) {
 }
 
 fn draw_open_exit(exit: &Exit) {
+    let rect = layout::rect_to_screen(exit.rect);
     draw_rectangle(
-        exit.rect.x,
-        exit.rect.y,
-        exit.rect.w,
-        exit.rect.h,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
         Color::from_rgba(180, 146, 72, 128),
     );
     draw_rectangle_lines(
-        exit.rect.x,
-        exit.rect.y,
-        exit.rect.w,
-        exit.rect.h,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
         2.0,
         Color::from_rgba(255, 229, 157, 220),
     );
-    draw_text(exit.label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
+    draw_text(exit.label, rect.x, rect.y - 10.0, 20.0, WHITE);
 }
 
 fn draw_locked_exit(exit: &Exit, reason: &str) {
     let _ = reason;
+    let rect = layout::rect_to_screen(exit.rect);
     draw_rectangle(
-        exit.rect.x,
-        exit.rect.y,
-        exit.rect.w,
-        exit.rect.h,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
         Color::from_rgba(21, 28, 30, 222),
     );
     draw_rectangle_lines(
-        exit.rect.x,
-        exit.rect.y,
-        exit.rect.w,
-        exit.rect.h,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
         2.0,
         Color::from_rgba(112, 126, 120, 180),
     );
 
     let line_color = Color::from_rgba(160, 178, 168, 36);
-    let mut y = exit.rect.y + 16.0;
-    while y < exit.rect.y + exit.rect.h - 12.0 {
+    let mut y = rect.y + 16.0;
+    while y < rect.y + rect.h - 12.0 {
         draw_line(
-            exit.rect.x + 8.0,
+            rect.x + 8.0,
             y,
-            exit.rect.x + exit.rect.w - 8.0,
+            rect.x + rect.w - 8.0,
             y,
             1.0,
             line_color,
@@ -113,8 +117,8 @@ fn draw_locked_exit(exit: &Exit, reason: &str) {
     let text = measure_text(label, None, size, 1.0);
     draw_text(
         label,
-        exit.rect.x + exit.rect.w / 2.0 - text.width / 2.0,
-        exit.rect.y + exit.rect.h / 2.0 + text.height / 2.0,
+        rect.x + rect.w / 2.0 - text.width / 2.0,
+        rect.y + rect.h / 2.0 + text.height / 2.0,
         size as f32,
         Color::from_rgba(185, 196, 190, 210),
     );
@@ -122,23 +126,25 @@ fn draw_locked_exit(exit: &Exit, reason: &str) {
 
 fn draw_static_actors(scene: &SceneDef, assets: &GameAssets) {
     for actor in scene.actors {
+        let pos = layout::world_to_screen(actor.pos);
+        let scale = layout::world_scale();
         if actor.id == "sign" {
-            draw_texture_centered(assets.sign.as_ref(), actor.pos, vec2(86.0, 86.0));
+            draw_texture_centered(assets.sign.as_ref(), pos, layout::scale_vec(vec2(86.0, 86.0)));
         } else if actor.id == "palourde" {
-            draw_palourde(actor.pos, assets);
+            draw_palourde(pos, assets);
         } else {
             draw_circle(
-                actor.pos.x,
-                actor.pos.y,
-                actor.radius,
+                pos.x,
+                pos.y,
+                actor.radius * scale,
                 Color::from_rgba(191, 116, 178, 255),
             );
         }
         draw_text(
             actor.label,
-            actor.pos.x - 42.0,
-            actor.pos.y - actor.radius - 14.0,
-            20.0,
+            pos.x - 42.0 * scale,
+            pos.y - actor.radius * scale - 14.0 * scale,
+            20.0 * scale,
             WHITE,
         );
     }
@@ -174,21 +180,19 @@ fn draw_palourde(center: Vec2, assets: &GameAssets) {
 }
 
 fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
+    let scale = layout::world_scale();
     if state.professor.scene == state.scene
         && !state.professor.boxed
         && state.carried != Some(CarryKind::Professor)
     {
-        draw_actor_shadow(state.professor.pos, 32.0, 9.0);
-        draw_texture_centered(
-            assets.professor.as_ref(),
-            state.professor.pos,
-            vec2(92.0, 92.0),
-        );
+        let pos = layout::world_to_screen(state.professor.pos);
+        draw_actor_shadow(pos, 32.0 * scale, 9.0 * scale);
+        draw_texture_centered(assets.professor.as_ref(), pos, layout::scale_vec(vec2(92.0, 92.0)));
         draw_text(
             "Professeur",
-            state.professor.pos.x - 48.0,
-            state.professor.pos.y - 55.0,
-            20.0,
+            pos.x - 48.0 * scale,
+            pos.y - 55.0 * scale,
+            20.0 * scale,
             WHITE,
         );
     }
@@ -196,13 +200,14 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     for (index, pillar) in state.pillars.iter().enumerate() {
         let kind = CarryKind::Pillar(index);
         if pillar.scene == state.scene && !pillar.boxed && state.carried != Some(kind) {
-            draw_actor_shadow(pillar.pos + vec2(0.0, 48.0), 30.0, 8.0);
-            draw_texture_centered(assets.pillar.as_ref(), pillar.pos, vec2(72.0, 118.0));
+            let pos = layout::world_to_screen(pillar.pos);
+            draw_actor_shadow(pos + vec2(0.0, 48.0 * scale), 30.0 * scale, 8.0 * scale);
+            draw_texture_centered(assets.pillar.as_ref(), pos, layout::scale_vec(vec2(72.0, 118.0)));
             draw_text(
                 &format!("Pilier {}", index + 1),
-                pillar.pos.x - 40.0,
-                pillar.pos.y - 64.0,
-                18.0,
+                pos.x - 40.0 * scale,
+                pos.y - 64.0 * scale,
+                18.0 * scale,
                 WHITE,
             );
         }
@@ -211,34 +216,37 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     if state.scene == SceneId::SalleEntrainement {
         let colors = palette(state.scene);
         draw_training_box(colors);
-        draw_text("Boite", 610.0, 554.0, 24.0, WHITE);
+        let box_rect = layout::rect_to_screen(TRAINING_BOX);
+        draw_text("Boite", box_rect.x + 55.0 * scale, box_rect.y + 54.0 * scale, 24.0 * scale, WHITE);
     }
 }
 
 fn draw_player(state: &GameState, assets: &GameAssets) {
-    draw_actor_shadow(state.player_pos + vec2(0.0, 36.0), 26.0, 8.0);
+    let pos = layout::world_to_screen(state.player_pos);
+    let scale = layout::world_scale();
+    draw_actor_shadow(pos + vec2(0.0, 36.0 * scale), 26.0 * scale, 8.0 * scale);
 
     if let Some(sheet) = assets.player_sheet.as_ref() {
         let frame = player_frame(state);
         draw_texture_ex(
             sheet,
-            state.player_pos.x - 32.0,
-            state.player_pos.y - 72.0,
+            pos.x - 32.0 * scale,
+            pos.y - 72.0 * scale,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(vec2(64.0, 96.0)),
+                dest_size: Some(layout::scale_vec(vec2(64.0, 96.0))),
                 source: Some(frame),
                 ..Default::default()
             },
         );
     } else {
-        draw_player_sprite(state.player_pos, state.player_facing);
+        draw_player_sprite(pos, state.player_facing);
     }
 
     draw_circle(
-        state.player_pos.x,
-        state.player_pos.y + 27.0,
-        3.0,
+        pos.x,
+        pos.y + 27.0 * scale,
+        3.0 * scale,
         Color::from_rgba(95, 255, 154, 190),
     );
 
@@ -249,9 +257,9 @@ fn draw_player(state: &GameState, assets: &GameAssets) {
         };
         draw_text(
             label,
-            state.player_pos.x - 52.0,
-            state.player_pos.y - 48.0,
-            18.0,
+            pos.x - 52.0 * scale,
+            pos.y - 48.0 * scale,
+            18.0 * scale,
             YELLOW,
         );
     }
@@ -288,56 +296,55 @@ fn draw_actor_shadow(center: Vec2, radius_x: f32, radius_y: f32) {
 }
 
 fn draw_training_box(colors: crate::visual_style::ScenePalette) {
+    let rect = layout::rect_to_screen(TRAINING_BOX);
+    let scale = layout::world_scale();
     draw_actor_shadow(
-        vec2(
-            TRAINING_BOX.x + TRAINING_BOX.w / 2.0,
-            TRAINING_BOX.y + TRAINING_BOX.h,
-        ),
-        72.0,
-        11.0,
+        vec2(rect.x + rect.w / 2.0, rect.y + rect.h),
+        72.0 * scale,
+        11.0 * scale,
     );
     draw_rectangle(
-        TRAINING_BOX.x,
-        TRAINING_BOX.y,
-        TRAINING_BOX.w,
-        TRAINING_BOX.h,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
         Color::from_rgba(94, 55, 37, 255),
     );
     draw_rectangle(
-        TRAINING_BOX.x + 12.0,
-        TRAINING_BOX.y + 14.0,
-        TRAINING_BOX.w - 24.0,
-        14.0,
+        rect.x + 12.0 * scale,
+        rect.y + 14.0 * scale,
+        rect.w - 24.0 * scale,
+        14.0 * scale,
         Color::from_rgba(132, 78, 49, 255),
     );
     draw_rectangle(
-        TRAINING_BOX.x + 20.0,
-        TRAINING_BOX.y + 50.0,
-        TRAINING_BOX.w - 40.0,
-        10.0,
+        rect.x + 20.0 * scale,
+        rect.y + 50.0 * scale,
+        rect.w - 40.0 * scale,
+        10.0 * scale,
         Color::from_rgba(65, 38, 30, 255),
     );
     draw_rectangle_lines(
-        TRAINING_BOX.x,
-        TRAINING_BOX.y,
-        TRAINING_BOX.w,
-        TRAINING_BOX.h,
-        4.0,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        4.0 * scale,
         Color::from_rgba(235, 210, 155, 255),
     );
     draw_rectangle_lines(
-        TRAINING_BOX.x + 9.0,
-        TRAINING_BOX.y + 9.0,
-        TRAINING_BOX.w - 18.0,
-        TRAINING_BOX.h - 18.0,
-        2.0,
+        rect.x + 9.0 * scale,
+        rect.y + 9.0 * scale,
+        rect.w - 18.0 * scale,
+        rect.h - 18.0 * scale,
+        2.0 * scale,
         Color::from_rgba(45, 28, 24, 220),
     );
     draw_rectangle(
-        TRAINING_BOX.x + 10.0,
-        TRAINING_BOX.y + 12.0,
-        TRAINING_BOX.w - 20.0,
-        12.0,
+        rect.x + 10.0 * scale,
+        rect.y + 12.0 * scale,
+        rect.w - 20.0 * scale,
+        12.0 * scale,
         Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.18),
     );
 }
@@ -370,14 +377,12 @@ fn draw_hud(state: &GameState) {
             .collect::<Vec<_>>()
             .join("  ")
     };
-    draw_terminal_panel(
-        Rect::new(34.0, 650.0, 1212.0, 62.0),
-        Color::from_rgba(128, 239, 190, 210),
-    );
+    let hud = layout::hud_rect();
+    draw_terminal_panel(hud, Color::from_rgba(128, 239, 190, 210));
     draw_text(
         &format!("Sorts appris: {spells}"),
-        52.0,
-        676.0,
+        hud.x + 18.0,
+        hud.y + 26.0,
         20.0,
         Color::from_rgba(206, 255, 224, 255),
     );
@@ -385,32 +390,35 @@ fn draw_hud(state: &GameState) {
     let actions = available_actions(state);
     draw_text(
         &format!("Possible ici > {}", actions.join("   |   ")),
-        52.0,
-        702.0,
+        hud.x + 18.0,
+        hud.y + 52.0,
         20.0,
         Color::from_rgba(190, 206, 214, 255),
     );
 
     if state.show_pwd {
-        draw_terminal_panel(Rect::new(48.0, 96.0, 318.0, 48.0), YELLOW);
+        let play = layout::play_rect();
+        draw_terminal_panel(Rect::new(play.x + 8.0, play.y + 8.0, 318.0, 48.0), YELLOW);
         draw_text(
             &format!("pwd -> {}", state.scene.label()),
-            62.0,
-            128.0,
+            play.x + 22.0,
+            play.y + 40.0,
             24.0,
             YELLOW,
         );
     }
 
     if let Some(toast) = &state.toast {
+        let play = layout::play_rect();
+        let rect = Rect::new(play.x + play.w / 2.0 - 210.0, play.y - 70.0, 420.0, 46.0);
         draw_terminal_panel(
-            Rect::new(430.0, 24.0, 420.0, 46.0),
+            rect,
             Color::from_rgba(150, 240, 180, 255),
         );
         draw_text(
             toast,
-            448.0,
-            55.0,
+            rect.x + 18.0,
+            rect.y + 31.0,
             22.0,
             Color::from_rgba(150, 240, 180, 255),
         );
