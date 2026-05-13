@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 
 use crate::assets::GameAssets;
 use crate::input::InputFrame;
+use crate::menu::draw_menu;
 use crate::render::{draw_dialog_overlay, draw_game};
 use crate::state::{AppMode, CarryKind, DialogId, DialogReward, Facing, GameState, Spell};
 use crate::world::{TRAINING_BOX, exit_locked_reason, scene_def};
@@ -214,7 +215,7 @@ impl Game {
 
     pub fn draw(&self) {
         match self.state.mode {
-            AppMode::Menu => draw_menu(&self.assets),
+            AppMode::Menu => draw_menu(),
             AppMode::Intro => draw_intro(self.state.intro_step),
             AppMode::Playing => draw_game(&self.state, &self.assets),
             AppMode::Dialog(dialog) => {
@@ -227,24 +228,6 @@ impl Game {
             }
         }
     }
-}
-
-fn draw_menu(assets: &GameAssets) {
-    clear_background(Color::from_rgba(12, 14, 18, 255));
-    if let Some(title) = &assets.title {
-        draw_texture_ex(
-            title,
-            380.0,
-            115.0,
-            WHITE,
-            DrawTextureParams {
-                dest_size: Some(vec2(520.0, 220.0)),
-                ..Default::default()
-            },
-        );
-    }
-    draw_text("TERMINUS REWORK", 340.0, 280.0, 56.0, WHITE);
-    draw_text("appuie sur Entree ou Espace", 446.0, 345.0, 26.0, GRAY);
 }
 
 fn draw_intro(step: usize) {
