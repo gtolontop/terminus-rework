@@ -4,6 +4,7 @@ use crate::state::SceneId;
 
 pub struct GameAssets {
     pub player_sheet: Option<Texture2D>,
+    pub palourde_sheet: Option<Texture2D>,
     pub terrain_tiles: TerrainTiles,
     pub professor: Option<Texture2D>,
     pub pillar: Option<Texture2D>,
@@ -25,6 +26,11 @@ impl GameAssets {
             player_sheet: load_first(&[
                 "assets/sprites/player_sheet.png",
                 "game/assets/sprites/player_sheet.png",
+            ])
+            .await,
+            palourde_sheet: load_first(&[
+                "assets/sprites/palourde_sheet.png",
+                "game/assets/sprites/palourde_sheet.png",
             ])
             .await,
             terrain_tiles: TerrainTiles::load().await,
