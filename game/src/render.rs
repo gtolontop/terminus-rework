@@ -3,12 +3,13 @@ use macroquad::prelude::*;
 use crate::assets::GameAssets;
 use crate::pixel_art::draw_player_sprite;
 use crate::state::{CarryKind, DialogId, GameState, SceneId, Spell};
-use crate::visual_style::draw_pixel_scene;
+use crate::visual_style::{draw_ambient_pixels, draw_pixel_scene, palette, pulse_color};
 use crate::world::{Exit, SceneDef, TRAINING_BOX, exit_locked_reason, scene_def};
 
 pub fn draw_game(state: &GameState, assets: &GameAssets) {
     let scene = scene_def(state.scene);
     draw_scene_floor(&scene);
+    draw_ambient_pixels(scene.id, get_time() as f32);
     draw_exits(&scene, state);
     draw_static_actors(&scene, assets);
     draw_dynamic_actors(state, assets);
@@ -62,13 +63,10 @@ fn draw_exits(scene: &SceneDef, state: &GameState) {
 }
 
 fn draw_open_exit(exit: &Exit) {
-    draw_rectangle(
-        exit.rect.x,
-        exit.rect.y,
-        exit.rect.w,
-        exit.rect.h,
-        Color::from_rgba(243, 190, 84, 145),
-    );
+    let time = get_time() as f32;
+    let glow = pulse_color(Color::from_rgba(243, 190, 84, 180), time * 3.0, 0.35, 0.55);
+
+    draw_rectangle(exit.rect.x, exit.rect.y, exit.rect.w, exit.rect.h, glow);
     draw_rectangle_lines(
         exit.rect.x,
         exit.rect.y,
@@ -78,6 +76,16 @@ fn draw_open_exit(exit: &Exit) {
         Color::from_rgba(255, 229, 157, 220),
     );
     draw_text(exit.label, exit.rect.x, exit.rect.y - 10.0, 20.0, WHITE);
+
+    let sweep = (time * 42.0) % (exit.rect.h + 40.0);
+    draw_line(
+        exit.rect.x + 5.0,
+        exit.rect.y + sweep - 20.0,
+        exit.rect.x + exit.rect.w - 5.0,
+        exit.rect.y + sweep,
+        3.0,
+        Color::from_rgba(255, 250, 202, 120),
+    );
 }
 
 fn draw_locked_exit(exit: &Exit, reason: &str) {
@@ -183,12 +191,20 @@ fn draw_dynamic_actors(state: &GameState, assets: &GameAssets) {
     }
 
     if state.scene == SceneId::SalleEntrainement {
+        let colors = palette(state.scene);
         draw_rectangle(
             TRAINING_BOX.x,
             TRAINING_BOX.y,
             TRAINING_BOX.w,
             TRAINING_BOX.h,
             Color::from_rgba(100, 62, 45, 255),
+        );
+        draw_rectangle(
+            TRAINING_BOX.x + 10.0,
+            TRAINING_BOX.y + 12.0,
+            TRAINING_BOX.w - 20.0,
+            12.0,
+            Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.18),
         );
         draw_rectangle_lines(
             TRAINING_BOX.x,

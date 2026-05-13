@@ -76,6 +76,31 @@ pub fn draw_pixel_scene(scene: SceneId) {
     draw_vignette();
 }
 
+pub fn draw_ambient_pixels(scene: SceneId, time: f32) {
+    let colors = palette(scene);
+    match scene {
+        SceneId::Depart | SceneId::Prairie | SceneId::BoisDesLutins => {
+            draw_fireflies(colors, time);
+        }
+        SceneId::AcademieDesBots | SceneId::Cours => {
+            draw_magic_dust(colors, time);
+        }
+        SceneId::SalleEntrainement => {
+            draw_training_sparks(colors, time);
+        }
+    }
+}
+
+pub fn pulse_color(color: Color, time: f32, speed: f32, amount: f32) -> Color {
+    let pulse = 1.0 + time.sin() * speed * amount;
+    Color::new(
+        (color.r * pulse).min(1.0),
+        (color.g * pulse).min(1.0),
+        (color.b * pulse).min(1.0),
+        color.a,
+    )
+}
+
 fn draw_play_area(colors: ScenePalette) {
     draw_rectangle(
         PLAY_AREA.x,
@@ -179,6 +204,59 @@ fn draw_vignette() {
         34.0,
         Color::from_rgba(0, 0, 0, 75),
     );
+}
+
+fn draw_fireflies(colors: ScenePalette, time: f32) {
+    for index in 0..18 {
+        let seed = hash2(index, index * 7) as f32;
+        let x = PLAY_AREA.x + 80.0 + (seed % 1020.0);
+        let y = PLAY_AREA.y + 70.0 + ((seed / 11.0) % 410.0);
+        let bob = (time * 1.8 + index as f32).sin() * 5.0;
+        let alpha = 90 + ((time * 2.4 + index as f32).sin().abs() * 120.0) as u8;
+        draw_rectangle(
+            x,
+            y + bob,
+            5.0,
+            5.0,
+            Color::from_rgba(
+                (colors.glow.r * 255.0) as u8,
+                (colors.glow.g * 255.0) as u8,
+                (colors.glow.b * 255.0) as u8,
+                alpha,
+            ),
+        );
+    }
+}
+
+fn draw_magic_dust(colors: ScenePalette, time: f32) {
+    for index in 0..24 {
+        let seed = hash2(index * 5, index * 13) as f32;
+        let x = PLAY_AREA.x + 70.0 + (seed % 1060.0);
+        let y = PLAY_AREA.y + 80.0 + ((seed / 9.0 + time * 18.0) % 390.0);
+        draw_rectangle(
+            x,
+            y,
+            4.0,
+            4.0,
+            Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.35),
+        );
+    }
+}
+
+fn draw_training_sparks(colors: ScenePalette, time: f32) {
+    for index in 0..12 {
+        let seed = hash2(index * 3, index * 19) as f32;
+        let x = PLAY_AREA.x + 130.0 + (seed % 920.0);
+        let y = PLAY_AREA.y + 120.0 + ((seed / 17.0) % 300.0);
+        let blink = (time * 4.0 + index as f32).sin().max(0.0);
+        draw_rectangle(
+            x,
+            y,
+            6.0,
+            2.0 + blink * 5.0,
+            Color::new(colors.glow.r, colors.glow.g, colors.glow.b, 0.45),
+        );
+    }
 }
 
 fn hash2(x: i32, y: i32) -> i32 {
